@@ -1,0 +1,55 @@
+# Full local stack mirroring production: Postgres warehouse, one-shot pipeline, API, dashboard.
+#   docker compose up --build   ->  API http://localhost:8000/docs · dashboard http://localhost:8050
+# The public site is static: `python scripts/export_static.py && cd web && npm run build && npx serve out`
+x-warehouse-env: &warehouse-env
+  WAREHOUSE_URL: postgresql+psycopg://immodash:immodash@db:5432/immodash
+  DBT_TARGET: prod
+  PGHOST: db
+  PGUSER: immodash
+  PGPASSWORD: immodash
+  PGDATABASE: immodash
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: immodash
+      POSTGRES_PASSWORD: immodash
+      POSTGRES_DB: immodash
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U immodash"]
+      interval: 5s
+      retries: 10
+
+  pipeline:
+    build: .
+    environment: *warehouse-env
+    command: ["python", "flows/daily_refresh.py"]
+    depends_on:
+      db: {condition: service_healthy}
+
+  api:
+    build: .
+    environment: *warehouse-env
+    ports: ["8000:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 5s
+      retries: 20
+    command: ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    depends_on:
+      pipeline: {condition: service_completed_successfully}
+
+  dashboard:
+    build: .
+    environment:
+      API_URL: http://api:8000
+    ports: ["8050:8050"]
+    command: ["gunicorn", "dashboard.app:server", "--bind", "0.0.0.0:8050", "--workers", "2", "--timeout", "120"]
+    depends_on: [api]
+
+
+volumes:
+  pgdata:

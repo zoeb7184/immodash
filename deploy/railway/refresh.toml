@@ -1,0 +1,11 @@
+# Railway service: daily data refresh (cron job; the container exits when the flow finishes)
+# Config-as-code path: deploy/railway/refresh.toml
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+startCommand = "python flows/daily_refresh.py"
+# 04:15 UTC = 06:15 Berlin (summer time). Railway cron schedules are UTC.
+cronSchedule = "15 4 * * *"
+restartPolicyType = "NEVER"

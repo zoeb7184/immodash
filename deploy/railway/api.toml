@@ -1,0 +1,11 @@
+# Railway service: read API  (Settings -> Config-as-code path: deploy/railway/api.toml)
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+startCommand = "sh -c 'uvicorn api.main:app --host 0.0.0.0 --port ${PORT:-8000} --workers 2 --proxy-headers'"
+healthcheckPath = "/health"
+healthcheckTimeout = 60
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 5

@@ -1,0 +1,1238 @@
+{
+  "ok": true,
+  "started_at": "2026-10-03T15:49:12+00:00",
+  "seconds": 281.5,
+  "python": "3.13.16",
+  "checks": [
+    {
+      "name": "Lint (ruff)",
+      "ok": true,
+      "seconds": 0.0,
+      "summary": "All checks passed!",
+      "details": []
+    },
+    {
+      "name": "Ingest raw files -> bronze",
+      "ok": true,
+      "seconds": 7.8,
+      "summary": "12 bronze tables, 450,148 rows",
+      "details": [
+        {
+          "table": "bronze.zensus_rent_by_rooms",
+          "rows": 3200
+        },
+        {
+          "table": "bronze.zensus_vacancy",
+          "rows": 400
+        },
+        {
+          "table": "bronze.zensus_rent_by_size",
+          "rows": 4400
+        },
+        {
+          "table": "bronze.zensus_bezirke_rent",
+          "rows": 19
+        },
+        {
+          "table": "bronze.zensus_grid_rent_1km",
+          "rows": 135516
+        },
+        {
+          "table": "bronze.zensus_grid_rent_100m",
+          "rows": 245366
+        },
+        {
+          "table": "bronze.geo_kreise_outline_3035",
+          "rows": 400
+        },
+        {
+          "table": "bronze.vgrdl_income_population",
+          "rows": 38628
+        },
+        {
+          "table": "bronze.greix_city_rents",
+          "rows": 18696
+        },
+        {
+          "table": "bronze.greix_rent_vs_sales",
+          "rows": 2838
+        },
+        {
+          "table": "bronze.bundesbank_mortgage_rate",
+          "rows": 284
+        },
+        {
+          "table": "bronze.geo_kreise",
+          "rows": 401
+        }
+      ]
+    },
+    {
+      "name": "dbt build (silver + gold + tests)",
+      "ok": true,
+      "seconds": 8.8,
+      "summary": "27 models/seeds built, 63 data tests, 0 failures",
+      "details": [
+        {
+          "node": "immodash.stg_geo__kreise",
+          "type": "model",
+          "status": "success",
+          "seconds": 0.17
+        },
+        {
+          "node": "immodash.stg_greix__city_rents",
+          "type": "model",
+          "status": "success",
+          "seconds": 0.17
+        },
+        {
+          "node": "immodash.stg_bundesbank__mortgage_rate",
+          "type": "model",
+          "status": "success",
+          "seconds": 0.18
+        },
+        {
+          "node": "immodash.stg_geo__kreis_outlines",
+          "type": "model",
+          "status": "success",
+          "seconds": 0.2
+        },
+        {
+          "node": "immodash.stg_vgrdl__regional_accounts",
+          "type": "model",
+          "status": "success",
+          "seconds": 0.09
+        },
+        {
+          "node": "immodash.stg_greix__rent_vs_sales",
+          "type": "model",
+          "status": "success",
+          "seconds": 0.1
+        },
+        {
+          "node": "immodash.stg_zensus__bezirke_rent",
+          "type": "model",
+          "status": "success",
+          "seconds": 0.11
+        },
+        {
+          "node": "immodash.stg_zensus__grid_rent",
+          "type": "model",
+          "status": "success",
+          "seconds": 0.1
+        },
+        {
+          "node": "immodash.stg_zensus__rent_by_size",
+          "type": "model",
+          "status": "success",
+          "seconds": 0.12
+        },
+        {
+          "node": "immodash.stg_zensus__rent_by_rooms",
+          "type": "model",
+          "status": "success",
+          "seconds": 0.15
+        },
+        {
+          "node": "immodash.stg_zensus__vacancy",
+          "type": "model",
+          "status": "success",
+          "seconds": 0.14
+        },
+        {
+          "node": "immodash.bundeslaender",
+          "type": "seed",
+          "status": "success",
+          "seconds": 0.14
+        },
+        {
+          "node": "immodash.not_null_stg_geo__kreise_ags.9624dd6086",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.11
+        },
+        {
+          "node": "immodash.city_kreis_map",
+          "type": "seed",
+          "status": "success",
+          "seconds": 0.14
+        },
+        {
+          "node": "immodash.accepted_values_stg_greix__city_rents_frequency__monthly__quarterly__annual.ac72e33072",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.11
+        },
+        {
+          "node": "immodash.between_stg_greix__city_rents_median_rent_sqm__40__3.d7140ebf9c",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.1
+        },
+        {
+          "node": "immodash.between_stg_bundesbank__mortgage_rate_rate_pct__15__0.404f45d41e",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.08
+        },
+        {
+          "node": "immodash.not_null_stg_greix__city_rents_city.6ce6e85527",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.08
+        },
+        {
+          "node": "immodash.not_null_stg_bundesbank__mortgage_rate_period_date.381e167c00",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.08
+        },
+        {
+          "node": "immodash.unique_stg_bundesbank__mortgage_rate_period_date.21ec307ec9",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.08
+        },
+        {
+          "node": "immodash.between_stg_vgrdl__regional_accounts_population__4000000__20000.da4003c300",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.08
+        },
+        {
+          "node": "immodash.unique_stg_vgrdl__regional_accounts_ags_year.60ae22f1fc",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.09
+        },
+        {
+          "node": "immodash.between_stg_vgrdl__regional_accounts_disposable_income_per_resident_eur__80000__5000.aec7e7bf95",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.11
+        },
+        {
+          "node": "immodash.not_null_stg_zensus__bezirke_rent_bezirk_code.026d2c692f",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.08
+        },
+        {
+          "node": "immodash.not_null_stg_zensus__bezirke_rent_city.cf1d465625",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.1
+        },
+        {
+          "node": "immodash.unique_stg_zensus__bezirke_rent_bezirk_code.17985f6a90",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.08
+        },
+        {
+          "node": "immodash.accepted_values_stg_zensus__grid_rent_resolution_m__False__100__1000.472bbeb59e",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.1
+        },
+        {
+          "node": "immodash.not_null_stg_zensus__grid_rent_ags.2ced879fdf",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.09
+        },
+        {
+          "node": "immodash.not_null_stg_zensus__rent_by_size_sqm_from.958253c831",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.06
+        },
+        {
+          "node": "immodash.between_stg_zensus__rent_by_size_rent_eur_sqm__35__2.c7f0de1870",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.08
+        },
+        {
+          "node": "immodash.between_stg_zensus__rent_by_rooms_rent_eur_sqm__30__2.bed27cd54f",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.07
+        },
+        {
+          "node": "immodash.accepted_values_stg_zensus__rent_by_rooms_rooms__total__1__2__3__4__5__6__7_.891a4aba05",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.09
+        },
+        {
+          "node": "immodash.not_null_stg_zensus__rent_by_rooms_ags.ca166cf668",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.07
+        },
+        {
+          "node": "immodash.not_null_stg_zensus__rent_by_rooms_rent_eur_sqm.e9254be09c",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.07
+        },
+        {
+          "node": "immodash.unique_stg_zensus__rent_by_rooms_ags_rooms.f24e74cf43",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.06
+        },
+        {
+          "node": "immodash.not_null_stg_zensus__rent_by_rooms_rooms.c7af70d4de",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.1
+        },
+        {
+          "node": "immodash.not_null_stg_zensus__vacancy_ags.324569176a",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.06
+        },
+        {
+          "node": "immodash.between_stg_zensus__vacancy_market_active_vacancy_pct__30__0.e4847b9764",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.08
+        },
+        {
+          "node": "immodash.not_null_stg_zensus__vacancy_market_active_vacancy_pct.6f0dbc31c7",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.08
+        },
+        {
+          "node": "immodash.unique_stg_zensus__vacancy_ags.4ea1829192",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.11
+        },
+        {
+          "node": "immodash.relationships_stg_greix__city_rents_city__city__ref_city_kreis_map_.a49e732cd5",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.1
+        },
+        {
+          "node": "immodash.fct_mortgage_rates",
+          "type": "model",
+          "status": "success",
+          "seconds": 0.12
+        },
+        {
+          "node": "immodash.dim_kreis",
+          "type": "model",
+          "status": "success",
+          "seconds": 0.1
+        },
+        {
+          "node": "immodash.fct_kreis_neighbourhood_spread",
+          "type": "model",
+          "status": "success",
+          "seconds": 0.16
+        },
+        {
+          "node": "immodash.fct_bezirk_rent",
+          "type": "model",
+          "status": "success",
+          "seconds": 0.1
+        },
+        {
+          "node": "immodash.fct_kreis_rent_by_rooms",
+          "type": "model",
+          "status": "success",
+          "seconds": 0.11
+        },
+        {
+          "node": "immodash.fct_city_market_pressure",
+          "type": "model",
+          "status": "success",
+          "seconds": 0.09
+        },
+        {
+          "node": "immodash.not_null_fct_mortgage_rates_period_date.cc7878816a",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.04
+        },
+        {
+          "node": "immodash.fct_city_rent_monthly",
+          "type": "model",
+          "status": "success",
+          "seconds": 0.17
+        },
+        {
+          "node": "immodash.unique_fct_mortgage_rates_period_date.7c55b2f3ee",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.11
+        },
+        {
+          "node": "immodash.assert_kreis_count_is_400",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.07
+        },
+        {
+          "node": "immodash.not_null_dim_kreis_ags.929afe5cf8",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.06
+        },
+        {
+          "node": "immodash.not_null_dim_kreis_land_name.c474b7ca89",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.07
+        },
+        {
+          "node": "immodash.not_null_dim_kreis_population.f202960bf1",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.07
+        },
+        {
+          "node": "immodash.fct_grid_rent_cells",
+          "type": "model",
+          "status": "success",
+          "seconds": 0.55
+        },
+        {
+          "node": "immodash.unique_dim_kreis_ags.f2ad4ea56b",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.08
+        },
+        {
+          "node": "immodash.not_null_fct_kreis_neighbourhood_spread_ags.2b4a684118",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.09
+        },
+        {
+          "node": "immodash.unique_fct_kreis_neighbourhood_spread_ags.aa1c49c920",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.07
+        },
+        {
+          "node": "immodash.assert_every_kreis_has_total_rent",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.06
+        },
+        {
+          "node": "immodash.unique_fct_bezirk_rent_bezirk_code.f0fe672785",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.08
+        },
+        {
+          "node": "immodash.relationships_fct_kreis_rent_by_rooms_ags__ags__ref_dim_kreis_.23b7d10825",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.08
+        },
+        {
+          "node": "immodash.between_fct_city_rent_monthly_index_yoy_pct__40___30.f06d7ebf20",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.1
+        },
+        {
+          "node": "immodash.relationships_fct_city_rent_monthly_ags__ags__ref_dim_kreis_.214542c4da",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.09
+        },
+        {
+          "node": "immodash.unique_fct_city_rent_monthly_city_cast_period_date_as_varchar_.e8ca2ccda4",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.07
+        },
+        {
+          "node": "immodash.fct_kreis_affordability",
+          "type": "model",
+          "status": "success",
+          "seconds": 0.11
+        },
+        {
+          "node": "immodash.not_null_fct_kreis_affordability_affordability_index.6367f7d3b0",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.08
+        },
+        {
+          "node": "immodash.between_fct_kreis_affordability_rent_burden_pct__40__3.2313568ffa",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.09
+        },
+        {
+          "node": "immodash.not_null_fct_kreis_affordability_ags.707ca78d22",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.05
+        },
+        {
+          "node": "immodash.not_null_fct_kreis_affordability_rent_burden_pct.401887796f",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.19
+        },
+        {
+          "node": "immodash.unique_fct_kreis_affordability_ags.0561a6991b",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.17
+        },
+        {
+          "node": "immodash.fct_city_snapshot",
+          "type": "model",
+          "status": "success",
+          "seconds": 0.15
+        },
+        {
+          "node": "immodash.fct_kreis_supply_demand",
+          "type": "model",
+          "status": "success",
+          "seconds": 0.16
+        },
+        {
+          "node": "immodash.accepted_values_fct_kreis_supply_demand_market_balance__tight__balanced__slack.dd236e8e8b",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.06
+        },
+        {
+          "node": "immodash.not_null_fct_city_snapshot_asking_rent_burden_pct.805cab66d2",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.07
+        },
+        {
+          "node": "immodash.between_fct_kreis_supply_demand_population_growth_5y_pct__30___20.8ddecb9408",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.07
+        },
+        {
+          "node": "immodash.between_fct_city_snapshot_asking_rent_burden_pct__60__5.1bf2a33897",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.07
+        },
+        {
+          "node": "immodash.not_null_fct_kreis_supply_demand_ags.ea1790cb60",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.07
+        },
+        {
+          "node": "immodash.not_null_fct_city_snapshot_city.b7365a8ce4",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.07
+        },
+        {
+          "node": "immodash.not_null_fct_kreis_supply_demand_population_growth_5y_pct.ca50531a5a",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.08
+        },
+        {
+          "node": "immodash.unique_fct_city_snapshot_city.99d11e2e63",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.07
+        },
+        {
+          "node": "immodash.unique_fct_kreis_supply_demand_ags.1be2f97d97",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.04
+        },
+        {
+          "node": "immodash.fct_kreis_asking_rent_estimate",
+          "type": "model",
+          "status": "success",
+          "seconds": 0.07
+        },
+        {
+          "node": "immodash.fct_city_supply_demand",
+          "type": "model",
+          "status": "success",
+          "seconds": 0.06
+        },
+        {
+          "node": "immodash.between_fct_kreis_asking_rent_estimate_estimated_asking_rent_eur_sqm__40__3.42c836ee89",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.07
+        },
+        {
+          "node": "immodash.accepted_values_fct_kreis_asking_rent_estimate_estimate_method__greix_city__greix_land_median__greix_national_median.64564e4473",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.08
+        },
+        {
+          "node": "immodash.not_null_fct_kreis_asking_rent_estimate_estimated_asking_rent_eur_sqm.3c8a191fa1",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.06
+        },
+        {
+          "node": "immodash.not_null_fct_city_supply_demand_city.a7b9bd4798",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.07
+        },
+        {
+          "node": "immodash.unique_fct_city_supply_demand_city.3b6fa321b1",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.05
+        },
+        {
+          "node": "immodash.fct_kreis_rent_by_size",
+          "type": "model",
+          "status": "success",
+          "seconds": 0.05
+        },
+        {
+          "node": "immodash.relationships_fct_kreis_rent_by_size_ags__ags__ref_dim_kreis_.63c9fc1667",
+          "type": "test",
+          "status": "pass",
+          "seconds": 0.02
+        }
+      ]
+    },
+    {
+      "name": "ML: forecasts + anomalies",
+      "ok": true,
+      "seconds": 34.3,
+      "summary": "ml.rent_forecast 111 rows; ml.forecast_backtest 9 rows; ml.model_card 1 rows; ml.rent_anomalies 5513 rows",
+      "details": []
+    },
+    {
+      "name": "pytest suite",
+      "ok": true,
+      "seconds": 54.8,
+      "summary": "28 passed, 7 warnings in 53.31s",
+      "details": []
+    },
+    {
+      "name": "Live API (HTTP)",
+      "ok": true,
+      "seconds": 2.0,
+      "summary": "25/25 endpoints OK, median 55 ms",
+      "details": [
+        {
+          "endpoint": "/health",
+          "status": 200,
+          "items": 0,
+          "ms": 52,
+          "ok": true
+        },
+        {
+          "endpoint": "/meta/sources",
+          "status": 200,
+          "items": 10,
+          "ms": 47,
+          "ok": true
+        },
+        {
+          "endpoint": "/cities",
+          "status": 200,
+          "items": 37,
+          "ms": 54,
+          "ok": true
+        },
+        {
+          "endpoint": "/rents/monthly?cities=Bielefeld&cities=Berlin",
+          "status": 200,
+          "items": 348,
+          "ms": 295,
+          "ok": true
+        },
+        {
+          "endpoint": "/market-pressure?cities=Berlin",
+          "status": 200,
+          "items": 55,
+          "ms": 54,
+          "ok": true
+        },
+        {
+          "endpoint": "/kreise/affordability",
+          "status": 200,
+          "items": 400,
+          "ms": 58,
+          "ok": true
+        },
+        {
+          "endpoint": "/kreise/rents?rooms=2",
+          "status": 200,
+          "items": 400,
+          "ms": 56,
+          "ok": true
+        },
+        {
+          "endpoint": "/kreise/asking-rents",
+          "status": 200,
+          "items": 400,
+          "ms": 58,
+          "ok": true
+        },
+        {
+          "endpoint": "/kreise/05711/asking-rents",
+          "status": 200,
+          "items": 8,
+          "ms": 53,
+          "ok": true
+        },
+        {
+          "endpoint": "/kreise/05711/rents",
+          "status": 200,
+          "items": 8,
+          "ms": 50,
+          "ok": true
+        },
+        {
+          "endpoint": "/affordability/finder?budget_eur=700&sqm=60&limit=400",
+          "status": 200,
+          "items": 301,
+          "ms": 60,
+          "ok": true
+        },
+        {
+          "endpoint": "/affordability/finder?budget_eur=700&sqm=50&size_band=WFL040B059&limit=400",
+          "status": 200,
+          "items": 358,
+          "ms": 61,
+          "ok": true
+        },
+        {
+          "endpoint": "/mortgage-rates",
+          "status": 200,
+          "items": 284,
+          "ms": 54,
+          "ok": true
+        },
+        {
+          "endpoint": "/geo/kreise",
+          "status": 200,
+          "items": 401,
+          "ms": 160,
+          "ok": true
+        },
+        {
+          "endpoint": "/kreise/rents-by-size?size_band=WFL060B079",
+          "status": 200,
+          "items": 400,
+          "ms": 72,
+          "ok": true
+        },
+        {
+          "endpoint": "/kreise/supply-demand",
+          "status": 200,
+          "items": 400,
+          "ms": 61,
+          "ok": true
+        },
+        {
+          "endpoint": "/cities/supply-demand",
+          "status": 200,
+          "items": 37,
+          "ms": 55,
+          "ok": true
+        },
+        {
+          "endpoint": "/kreise/neighbourhood-spread",
+          "status": 200,
+          "items": 400,
+          "ms": 54,
+          "ok": true
+        },
+        {
+          "endpoint": "/kreise/11000/grid",
+          "status": 200,
+          "items": 28477,
+          "ms": 202,
+          "ok": true
+        },
+        {
+          "endpoint": "/kreise/05711/grid?resolution_m=1000",
+          "status": 200,
+          "items": 243,
+          "ms": 54,
+          "ok": true
+        },
+        {
+          "endpoint": "/bezirke/rents",
+          "status": 200,
+          "items": 19,
+          "ms": 52,
+          "ok": true
+        },
+        {
+          "endpoint": "/forecasts",
+          "status": 200,
+          "items": 111,
+          "ms": 51,
+          "ok": true
+        },
+        {
+          "endpoint": "/forecasts/backtest",
+          "status": 200,
+          "items": 9,
+          "ms": 53,
+          "ok": true
+        },
+        {
+          "endpoint": "/anomalies",
+          "status": 200,
+          "items": 91,
+          "ms": 57,
+          "ok": true
+        },
+        {
+          "endpoint": "/cities/Bielefeld/summary?llm=false",
+          "status": 200,
+          "items": 0,
+          "ms": 73,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "name": "Dashboard layout + callbacks",
+      "ok": true,
+      "seconds": 3.1,
+      "summary": "46/46 callback runs OK (light + dark)",
+      "details": [
+        {
+          "callback": "page / (HTML)",
+          "theme": "light",
+          "ok": true,
+          "ms": 21,
+          "error": ""
+        },
+        {
+          "callback": "page / (HTML)",
+          "theme": "dark",
+          "ok": true,
+          "ms": 1,
+          "error": ""
+        },
+        {
+          "callback": "layout (all tabs)",
+          "theme": "light",
+          "ok": true,
+          "ms": 8,
+          "error": ""
+        },
+        {
+          "callback": "layout (all tabs)",
+          "theme": "dark",
+          "ok": true,
+          "ms": 8,
+          "error": ""
+        },
+        {
+          "callback": "KPI tiles",
+          "theme": "light",
+          "ok": true,
+          "ms": 11,
+          "error": ""
+        },
+        {
+          "callback": "KPI tiles",
+          "theme": "dark",
+          "ok": true,
+          "ms": 2,
+          "error": ""
+        },
+        {
+          "callback": "rent trend",
+          "theme": "light",
+          "ok": true,
+          "ms": 120,
+          "error": ""
+        },
+        {
+          "callback": "rent trend",
+          "theme": "dark",
+          "ok": true,
+          "ms": 32,
+          "error": ""
+        },
+        {
+          "callback": "city ranges",
+          "theme": "light",
+          "ok": true,
+          "ms": 21,
+          "error": ""
+        },
+        {
+          "callback": "city ranges",
+          "theme": "dark",
+          "ok": true,
+          "ms": 20,
+          "error": ""
+        },
+        {
+          "callback": "burden scatter",
+          "theme": "light",
+          "ok": true,
+          "ms": 30,
+          "error": ""
+        },
+        {
+          "callback": "burden scatter",
+          "theme": "dark",
+          "ok": true,
+          "ms": 25,
+          "error": ""
+        },
+        {
+          "callback": "market pressure",
+          "theme": "light",
+          "ok": true,
+          "ms": 34,
+          "error": ""
+        },
+        {
+          "callback": "market pressure",
+          "theme": "dark",
+          "ok": true,
+          "ms": 24,
+          "error": ""
+        },
+        {
+          "callback": "map: affordability",
+          "theme": "light",
+          "ok": true,
+          "ms": 325,
+          "error": ""
+        },
+        {
+          "callback": "map: affordability",
+          "theme": "dark",
+          "ok": true,
+          "ms": 151,
+          "error": ""
+        },
+        {
+          "callback": "map: supply vs demand",
+          "theme": "light",
+          "ok": true,
+          "ms": 278,
+          "error": ""
+        },
+        {
+          "callback": "map: supply vs demand",
+          "theme": "dark",
+          "ok": true,
+          "ms": 149,
+          "error": ""
+        },
+        {
+          "callback": "map: rent by size band",
+          "theme": "light",
+          "ok": true,
+          "ms": 166,
+          "error": ""
+        },
+        {
+          "callback": "map: rent by size band",
+          "theme": "dark",
+          "ok": true,
+          "ms": 345,
+          "error": ""
+        },
+        {
+          "callback": "Kreis detail (rooms)",
+          "theme": "light",
+          "ok": true,
+          "ms": 28,
+          "error": ""
+        },
+        {
+          "callback": "Kreis detail (rooms)",
+          "theme": "dark",
+          "ok": true,
+          "ms": 13,
+          "error": ""
+        },
+        {
+          "callback": "Kreis detail (sizes)",
+          "theme": "light",
+          "ok": true,
+          "ms": 35,
+          "error": ""
+        },
+        {
+          "callback": "Kreis detail (sizes)",
+          "theme": "dark",
+          "ok": true,
+          "ms": 13,
+          "error": ""
+        },
+        {
+          "callback": "supply & demand tab",
+          "theme": "light",
+          "ok": true,
+          "ms": 79,
+          "error": ""
+        },
+        {
+          "callback": "supply & demand tab",
+          "theme": "dark",
+          "ok": true,
+          "ms": 71,
+          "error": ""
+        },
+        {
+          "callback": "neighbourhoods 100 m",
+          "theme": "light",
+          "ok": true,
+          "ms": 250,
+          "error": ""
+        },
+        {
+          "callback": "neighbourhoods 100 m",
+          "theme": "dark",
+          "ok": true,
+          "ms": 115,
+          "error": ""
+        },
+        {
+          "callback": "neighbourhoods 1 km",
+          "theme": "light",
+          "ok": true,
+          "ms": 51,
+          "error": ""
+        },
+        {
+          "callback": "neighbourhoods 1 km",
+          "theme": "dark",
+          "ok": true,
+          "ms": 40,
+          "error": ""
+        },
+        {
+          "callback": "forecast fan",
+          "theme": "light",
+          "ok": true,
+          "ms": 40,
+          "error": ""
+        },
+        {
+          "callback": "forecast fan",
+          "theme": "dark",
+          "ok": true,
+          "ms": 18,
+          "error": ""
+        },
+        {
+          "callback": "backtest chart",
+          "theme": "light",
+          "ok": true,
+          "ms": 22,
+          "error": ""
+        },
+        {
+          "callback": "backtest chart",
+          "theme": "dark",
+          "ok": true,
+          "ms": 17,
+          "error": ""
+        },
+        {
+          "callback": "forecast table",
+          "theme": "light",
+          "ok": true,
+          "ms": 12,
+          "error": ""
+        },
+        {
+          "callback": "forecast table",
+          "theme": "dark",
+          "ok": true,
+          "ms": 7,
+          "error": ""
+        },
+        {
+          "callback": "anomaly feed",
+          "theme": "light",
+          "ok": true,
+          "ms": 9,
+          "error": ""
+        },
+        {
+          "callback": "anomaly feed",
+          "theme": "dark",
+          "ok": true,
+          "ms": 2,
+          "error": ""
+        },
+        {
+          "callback": "AI summary",
+          "theme": "light",
+          "ok": true,
+          "ms": 13,
+          "error": ""
+        },
+        {
+          "callback": "AI summary",
+          "theme": "dark",
+          "ok": true,
+          "ms": 0,
+          "error": ""
+        },
+        {
+          "callback": "affordability finder",
+          "theme": "light",
+          "ok": true,
+          "ms": 13,
+          "error": ""
+        },
+        {
+          "callback": "affordability finder",
+          "theme": "dark",
+          "ok": true,
+          "ms": 0,
+          "error": ""
+        },
+        {
+          "callback": "affordability ranking",
+          "theme": "light",
+          "ok": true,
+          "ms": 21,
+          "error": ""
+        },
+        {
+          "callback": "affordability ranking",
+          "theme": "dark",
+          "ok": true,
+          "ms": 21,
+          "error": ""
+        },
+        {
+          "callback": "financing",
+          "theme": "light",
+          "ok": true,
+          "ms": 28,
+          "error": ""
+        },
+        {
+          "callback": "financing",
+          "theme": "dark",
+          "ok": true,
+          "ms": 30,
+          "error": ""
+        }
+      ]
+    },
+    {
+      "name": "Static site (snapshot + build + pages)",
+      "ok": true,
+      "seconds": 13.2,
+      "summary": "snapshot 89 files (10.9 MB), static build OK, 11/11 URLs served as expected",
+      "details": [
+        {
+          "page": "/",
+          "status": 200,
+          "kb": 215,
+          "ms": 57,
+          "ok": true
+        },
+        {
+          "page": "/cities/berlin",
+          "status": 200,
+          "kb": 63,
+          "ms": 51,
+          "ok": true
+        },
+        {
+          "page": "/cities/muenchen",
+          "status": 200,
+          "kb": 58,
+          "ms": 54,
+          "ok": true
+        },
+        {
+          "page": "/cities/bielefeld",
+          "status": 200,
+          "kb": 57,
+          "ms": 50,
+          "ok": true
+        },
+        {
+          "page": "/map",
+          "status": 200,
+          "kb": 1655,
+          "ms": 54,
+          "ok": true
+        },
+        {
+          "page": "/supply-demand",
+          "status": 200,
+          "kb": 172,
+          "ms": 47,
+          "ok": true
+        },
+        {
+          "page": "/affordability",
+          "status": 200,
+          "kb": 18,
+          "ms": 51,
+          "ok": true
+        },
+        {
+          "page": "/methodology",
+          "status": 200,
+          "kb": 23,
+          "ms": 48,
+          "ok": true
+        },
+        {
+          "page": "/data/meta.json",
+          "status": 200,
+          "kb": 0,
+          "ms": 50,
+          "ok": true
+        },
+        {
+          "page": "/data/grid/11000.json",
+          "status": 200,
+          "kb": 755,
+          "ms": 49,
+          "ok": true
+        },
+        {
+          "page": "/cities/nowhere",
+          "status": 404,
+          "kb": 0,
+          "ms": 61,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "name": "Postgres production path",
+      "ok": true,
+      "seconds": 156.5,
+      "summary": "Postgres: 27 models/seeds built, 63 data tests, 0 failures; ML ok; 25/25 endpoints OK, median 57 ms",
+      "details": []
+    }
+  ]
+}

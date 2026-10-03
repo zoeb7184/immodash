@@ -1,0 +1,35 @@
+version: 2
+
+sources:
+  - name: bronze
+    schema: bronze
+    description: Raw public datasets landed by the ingestion pipeline (one table per source file).
+    loaded_at_field: _loaded_at
+    freshness:
+      warn_after: {count: 2, period: day}
+      error_after: {count: 8, period: day}
+    tables:
+      - name: zensus_rent_by_rooms
+        description: Zensus 2022 table 4000W-0011, average net cold rent per m² by rooms, 400 Kreise.
+      - name: zensus_vacancy
+        description: Zensus 2022 table 4000W-0002, market-active vacancy rate (multi-dwelling buildings), 400 Kreise.
+      - name: zensus_rent_by_size
+        description: Zensus 2022 table 4000W-0009, rent per m² by floor-area band (20 m²), 400 Kreise.
+      - name: zensus_bezirke_rent
+        description: Zensus 2022 table 4000W-0004 for the Bezirke of Berlin and Hamburg.
+      - name: zensus_grid_rent_1km
+        description: Zensus 2022 average rent on the 1 km grid (EPSG:3035), assigned to Kreise.
+      - name: zensus_grid_rent_100m
+        description: Zensus 2022 average rent on the 100 m grid, Kreise containing a GREIX city only.
+      - name: geo_kreise_outline_3035
+        description: Simplified Kreis outlines in EPSG:3035 for grid heatmaps.
+      - name: vgrdl_income_population
+        description: VGRdL Reihe 2 Band 3 - disposable income (total, per resident) and population, 1995-2023.
+      - name: greix_city_rents
+        description: GREIX Mietpreisindex - asking rents per m² for 37 cities, monthly/quarterly/annual.
+      - name: greix_rent_vs_sales
+        description: GREIX rent index vs transaction price index, quarterly.
+      - name: bundesbank_mortgage_rate
+        description: Bundesbank effective rate on new housing loans to households, monthly.
+      - name: geo_kreise
+        description: BKG VG5000 Kreis polygons (Stand 01.01.2021) as GeoJSON strings.

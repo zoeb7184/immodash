@@ -1,0 +1,8 @@
+.git
+.venv
+__pycache__
+warehouse/*.duckdb*
+dbt/target
+dbt/logs
+_to_delete
+.pytest_cache

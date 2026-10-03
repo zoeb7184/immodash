@@ -1,0 +1,92 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: ${{ github.workspace }}/ingestion
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements-dev.txt
+      - name: Lint
+        run: ruff check .
+      - name: Ingest committed raw data into DuckDB (bronze)
+        run: python -m immodash_ingest --offline
+      - name: dbt build (silver + gold + data tests)
+        working-directory: dbt
+        run: dbt build --profiles-dir .
+      - name: Unit, API contract and ML tests
+        run: pytest -q
+      - name: End-to-end verification report
+        run: python scripts/verify.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: verification-report
+          path: reports/
+
+  postgres:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: immodash
+          POSTGRES_PASSWORD: immodash
+          POSTGRES_DB: immodash
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U immodash" --health-interval 5s --health-retries 10
+    env:
+      PYTHONPATH: ${{ github.workspace }}/ingestion
+      WAREHOUSE_URL: postgresql+psycopg://immodash:immodash@localhost:5432/immodash
+      DBT_TARGET: prod
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python -m immodash_ingest --offline
+      - working-directory: dbt
+        run: dbt build --profiles-dir .
+      - run: python -m ml
+
+  web:
+    runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/ingestion
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: pip install -r requirements.txt
+      - name: Build warehouse and export the static snapshot
+        run: |
+          python -m immodash_ingest --offline
+          (cd dbt && dbt build --profiles-dir . --quiet)
+          python -m ml
+          python scripts/export_static.py --no-llm --out /tmp/snapshot
+      - name: Type-check and build the static site (committed snapshot)
+        working-directory: web
+        run: |
+          npm ci
+          npm run lint
+          npm run build

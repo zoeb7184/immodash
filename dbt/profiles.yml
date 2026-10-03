@@ -1,0 +1,17 @@
+# Profiles live in the repo so CI and Docker work out of the box; secrets come from env vars.
+immodash:
+  target: "{{ env_var('DBT_TARGET', 'dev') }}"
+  outputs:
+    dev:
+      type: duckdb
+      path: "{{ env_var('DUCKDB_PATH', '../warehouse/immodash.duckdb') }}"
+      threads: 4
+    prod:
+      type: postgres
+      host: "{{ env_var('PGHOST', 'localhost') }}"
+      port: "{{ env_var('PGPORT', '5432') | int }}"
+      user: "{{ env_var('PGUSER', 'immodash') }}"
+      password: "{{ env_var('PGPASSWORD', 'immodash') }}"
+      dbname: "{{ env_var('PGDATABASE', 'immodash') }}"
+      schema: public
+      threads: 4

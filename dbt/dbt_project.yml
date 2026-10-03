@@ -1,0 +1,36 @@
+name: immodash
+version: "0.1.0"
+config-version: 2
+profile: immodash
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+clean-targets: ["target", "dbt_packages"]
+
+models:
+  immodash:
+    staging:
+      +schema: silver
+      +materialized: view
+    marts:
+      +schema: gold
+      +materialized: table
+
+seeds:
+  immodash:
+    +schema: silver
+    city_kreis_map:
+      +column_types:
+        ags: varchar
+    bundeslaender:
+      +column_types:
+        land_code: varchar
+
+vars:
+  # Affordability assumptions (documented in docs/adr/0003-affordability-index.md)
+  reference_flat_sqm: 60
+  reference_household_size: 2
+  reference_loan_eur: 300000
+  reference_amortisation_pct: 2.0

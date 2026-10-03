@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+warehouse/*.duckdb
+warehouse/*.duckdb.wal
+dbt/target/
+dbt/logs/
+dbt/dbt_packages/
+.pytest_cache/
+.ruff_cache/
+_to_delete/
+.DS_Store
+reports/*.fragment.html

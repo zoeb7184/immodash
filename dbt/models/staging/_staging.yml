@@ -1,0 +1,136 @@
+version: 2
+models:
+- name: stg_zensus__rent_by_rooms
+  description: Zensus 2022 average net cold rent (existing contracts) per m², by Kreis and rooms.
+  columns:
+  - name: ags
+    data_tests:
+    - not_null
+  - name: rooms
+    data_tests:
+    - not_null
+    - accepted_values:
+        arguments:
+          values:
+          - total
+          - '1'
+          - '2'
+          - '3'
+          - '4'
+          - '5'
+          - '6'
+          - 7+
+  - name: rent_eur_sqm
+    data_tests:
+    - not_null
+    - between:
+        arguments:
+          min_value: 2
+          max_value: 30
+  data_tests:
+  - unique:
+      arguments:
+        column_name: ags || '-' || rooms
+- name: stg_vgrdl__regional_accounts
+  description: Disposable income and population per Kreis and year (VGRdL).
+  columns:
+  - name: disposable_income_per_resident_eur
+    data_tests:
+    - between:
+        arguments:
+          min_value: 5000
+          max_value: 80000
+  - name: population
+    data_tests:
+    - between:
+        arguments:
+          min_value: 20000
+          max_value: 4000000
+  data_tests:
+  - unique:
+      arguments:
+        column_name: ags || '-' || year
+- name: stg_greix__city_rents
+  columns:
+  - name: city
+    data_tests:
+    - not_null
+    - relationships:
+        arguments:
+          to: ref('city_kreis_map')
+          field: city
+  - name: median_rent_sqm
+    data_tests:
+    - between:
+        arguments:
+          min_value: 3
+          max_value: 40
+  - name: frequency
+    data_tests:
+    - accepted_values:
+        arguments:
+          values:
+          - monthly
+          - quarterly
+          - annual
+- name: stg_bundesbank__mortgage_rate
+  columns:
+  - name: period_date
+    data_tests:
+    - unique
+    - not_null
+  - name: rate_pct
+    data_tests:
+    - between:
+        arguments:
+          min_value: 0
+          max_value: 15
+- name: stg_geo__kreise
+  columns:
+  - name: ags
+    data_tests:
+    - not_null
+- name: stg_zensus__vacancy
+  columns:
+  - name: ags
+    data_tests:
+    - unique
+    - not_null
+  - name: market_active_vacancy_pct
+    data_tests:
+    - not_null
+    - between:
+        arguments:
+          min_value: 0
+          max_value: 30
+- name: stg_zensus__rent_by_size
+  columns:
+  - name: rent_eur_sqm
+    data_tests:
+    - between:
+        arguments:
+          min_value: 2
+          max_value: 35
+  - name: sqm_from
+    data_tests:
+    - not_null
+- name: stg_zensus__bezirke_rent
+  columns:
+  - name: bezirk_code
+    data_tests:
+    - unique
+    - not_null
+  - name: city
+    data_tests:
+    - not_null
+- name: stg_zensus__grid_rent
+  columns:
+  - name: ags
+    data_tests:
+    - not_null
+  - name: resolution_m
+    data_tests:
+    - accepted_values:
+        arguments:
+          values: [100, 1000]
+          quote: false

@@ -1,0 +1,152 @@
+version: 2
+models:
+- name: dim_kreis
+  description: All 400 Kreise and kreisfreie Städte with Land, type and latest population and income.
+  columns:
+  - name: ags
+    description: Amtlicher Gemeindeschlüssel (5-digit Kreis key)
+    data_tests:
+    - unique
+    - not_null
+  - name: land_name
+    data_tests:
+    - not_null
+  - name: population
+    data_tests:
+    - not_null
+- name: fct_kreis_rent_by_rooms
+  description: Zensus 2022 rent per m² by Kreis and number of rooms, indexed to the national mean.
+  columns:
+  - name: ags
+    data_tests:
+    - relationships:
+        arguments:
+          to: ref('dim_kreis')
+          field: ags
+- name: fct_kreis_affordability
+  description: Rent burden and affordability index per Kreis (reference year 2022).
+  columns:
+  - name: ags
+    data_tests:
+    - unique
+    - not_null
+  - name: rent_burden_pct
+    data_tests:
+    - not_null
+    - between:
+        arguments:
+          min_value: 3
+          max_value: 40
+  - name: affordability_index
+    data_tests:
+    - not_null
+- name: fct_city_rent_monthly
+  description: Monthly asking rents per city with MoM / YoY / 5-year momentum.
+  columns:
+  - name: ags
+    data_tests:
+    - relationships:
+        arguments:
+          to: ref('dim_kreis')
+          field: ags
+  - name: index_yoy_pct
+    data_tests:
+    - between:
+        arguments:
+          min_value: -30
+          max_value: 40
+  data_tests:
+  - unique:
+      arguments:
+        column_name: city || '-' || cast(period_date as varchar)
+- name: fct_city_market_pressure
+  description: Quarterly time-on-market, quick-let share and a composite demand pressure score.
+- name: fct_mortgage_rates
+  description: Monthly housing-loan rate and reference monthly payment.
+  columns:
+  - name: period_date
+    data_tests:
+    - unique
+    - not_null
+- name: fct_city_snapshot
+  description: Latest-month headline metrics per city (one row per city).
+  columns:
+  - name: city
+    data_tests:
+    - unique
+    - not_null
+  - name: asking_rent_burden_pct
+    data_tests:
+    - not_null
+    - between:
+        arguments:
+          min_value: 5
+          max_value: 60
+- name: fct_kreis_asking_rent_estimate
+  description: Estimated current asking rent per Kreis and rooms (Zensus 2022 uplifted by GREIX asking premia).
+  columns:
+  - name: estimated_asking_rent_eur_sqm
+    data_tests:
+    - not_null
+    - between:
+        arguments:
+          min_value: 3
+          max_value: 40
+  - name: estimate_method
+    data_tests:
+    - accepted_values:
+        arguments:
+          values:
+          - greix_city
+          - greix_land_median
+          - greix_national_median
+- name: fct_kreis_rent_by_size
+  description: Zensus 2022 rent per m² by Kreis and floor-area band with estimated asking rent.
+  columns:
+  - name: ags
+    data_tests:
+    - relationships:
+        arguments:
+          to: ref('dim_kreis')
+          field: ags
+- name: fct_kreis_supply_demand
+  description: Vacancy (supply slack) vs 5-year population growth (demand) per Kreis, with a composite index.
+  columns:
+  - name: ags
+    data_tests:
+    - unique
+    - not_null
+  - name: market_balance
+    data_tests:
+    - accepted_values:
+        arguments:
+          values: [tight, balanced, slack]
+  - name: population_growth_5y_pct
+    data_tests:
+    - not_null
+    - between:
+        arguments:
+          min_value: -20
+          max_value: 30
+- name: fct_city_supply_demand
+  description: City-level supply/demand combining Kreis structure and GREIX listing dynamics.
+  columns:
+  - name: city
+    data_tests:
+    - unique
+    - not_null
+- name: fct_kreis_neighbourhood_spread
+  description: Within-Kreis rent dispersion (P10/P50/P90) from reliable 1 km grid cells.
+  columns:
+  - name: ags
+    data_tests:
+    - unique
+    - not_null
+- name: fct_grid_rent_cells
+  description: Zensus grid cells (100 m in city Kreise, 1 km everywhere) with index vs Kreis median.
+- name: fct_bezirk_rent
+  description: Berlin and Hamburg Bezirke rents vs city average.
+  columns:
+  - name: bezirk_code
+    data_tests:
+    - unique
