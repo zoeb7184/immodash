@@ -252,7 +252,7 @@ def check_web(warehouse_url: str):
 
     rows = []
     try:
-        pages = ["/", "/cities/berlin", "/cities/muenchen", "/cities/bielefeld", "/map", "/supply-demand",
+        pages = ["/", "/cities", "/cities/berlin", "/cities/muenchen", "/cities/bielefeld", "/map", "/supply-demand",
                  "/affordability", "/methodology", "/data/meta.json", "/data/grid/11000.json", "/cities/nowhere"]
         for path in pages:
             t0 = time.time()

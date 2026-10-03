@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { RankBars } from "@/components/RankBars";
 import { SupplyDemandScatter } from "@/components/SupplyDemandCharts";
+import { Term } from "@/components/Term";
+import { Figure, Stat, Takeaway } from "@/components/ui";
 import { data } from "@/lib/data";
 import { num, pct } from "@/lib/format";
 
-export const metadata: Metadata = { title: "Supply & demand" };
-
+export const metadata: Metadata = { title: "Supply & demand", description: "Where population growth meets a lack of empty flats: the tightest and slackest housing markets in Germany." };
 
 function pearson(a: number[], b: number[]) {
   const n = a.length, ma = a.reduce((s, x) => s + x, 0) / n, mb = b.reduce((s, x) => s + x, 0) / n;
@@ -17,76 +19,123 @@ function pearson(a: number[], b: number[]) {
 export default function SupplyDemand() {
   const kreise = data.supplyDemand(), cities = data.citySupplyDemand(), snaps = data.cities();
   const slugOf = Object.fromEntries(snaps.map((s) => [s.city, s.slug]));
-  const big = ["Berlin", "München", "Hamburg", "Frankfurt am Main", "Köln", "Bielefeld", "Leipzig", "Chemnitz"];
+  const big = ["Berlin", "München", "Hamburg", "Frankfurt am Main", "Köln", "Leipzig", "Chemnitz"];
   const highlight = Object.fromEntries(snaps.filter((s) => big.includes(s.city)).map((s) => [s.ags, s.city_en]));
   const ok = cities.filter((c) => c.supply_demand_index != null && c.demand_pressure_score != null);
   const r = pearson(ok.map((c) => c.supply_demand_index!), ok.map((c) => c.demand_pressure_score!));
   const counts = { tight: 0, balanced: 0, slack: 0 } as Record<string, number>;
   kreise.forEach((k) => counts[k.market_balance]++);
+  const popTight = kreise.filter((k) => k.market_balance === "tight").reduce((s, k) => s + (k.population ?? 0), 0);
+  const popAll = kreise.reduce((s, k) => s + (k.population ?? 0), 0);
   const sorted = [...kreise].sort((a, b) => b.supply_demand_index - a.supply_demand_index);
+  const tightest = sorted.slice(0, 10), slackest = sorted.slice(-10).reverse();
+  const strength = Math.abs(r) >= 0.7 ? "strongly" : Math.abs(r) >= 0.4 ? "clearly" : "only loosely";
+  const tightRural = kreise.filter((k) => k.market_balance === "tight" && !k.is_urban_district).length;
+  const topLands = (bal: string, n = 2) => {
+    const c: Record<string, number> = {};
+    kreise.filter((k) => k.market_balance === bal && k.land_name).forEach((k) => (c[k.land_name!] = (c[k.land_name!] ?? 0) + 1));
+    return Object.entries(c).sort((x, y) => y[1] - x[1]).slice(0, n).map(([l]) => l);
+  };
+  const cityRows = [...cities].sort((a, b) => (b.supply_demand_index ?? -9) - (a.supply_demand_index ?? -9));
 
   return (
     <>
-      <div className="page-head">
-        <div className="eyebrow">Vacancy vs. population growth</div>
-        <h1>Where demand outruns the housing stock</h1>
-        <p className="lede">
-          Supply slack is the share of flats in multi-dwelling buildings that were empty and on the market in the 2022
-          census. Demand is population growth over five years. The composite index is z(growth) − z(vacancy).
-          Across the 37 GREIX cities it agrees with live listing pressure: Pearson r = {r.toFixed(2)}.
-        </p>
-      </div>
-      <div className="kpis">
-        <div className="kpi"><span className="label">Tight</span><span className="value">{counts.tight}<span className="unit">Kreise</span></span><span className="sub">index ≥ 1</span></div>
-        <div className="kpi"><span className="label">Balanced</span><span className="value">{counts.balanced}<span className="unit">Kreise</span></span><span className="sub">between −1 and 1</span></div>
-        <div className="kpi"><span className="label">Slack</span><span className="value">{counts.slack}<span className="unit">Kreise</span></span><span className="sub">index ≤ −1</span></div>
-        <div className="kpi"><span className="label">Agreement with live market</span><span className="value">r = {r.toFixed(2)}</span><span className="sub">vs. GREIX days on market and quick lets</span></div>
-      </div>
-      <div className="grid">
-        <section className="panel c8">
-          <h2>400 Kreise</h2>
-          <p className="sub">Bubble size = population · dashed lines = medians · outlined = major cities</p>
-          <SupplyDemandScatter data={kreise} highlight={highlight} />
-        </section>
-        <section className="panel c4">
-          <h2>Tightest and slackest</h2>
-          <div className="tablewrap">
-            <table>
-              <thead><tr><th>Kreis</th><th className="num">Vacancy</th><th className="num">Pop. 5y</th><th className="num">Index</th></tr></thead>
-              <tbody>
-                {[...sorted.slice(0, 8), ...sorted.slice(-8)].map((k, i) => (
-                  <tr key={k.ags} style={i === 8 ? { borderTop: "2px solid var(--line)" } : undefined}>
-                    <td>{k.kreis_name.split(",")[0]}</td>
-                    <td className="num">{pct(k.market_active_vacancy_pct)}</td>
-                    <td className="num">{pct(k.population_growth_5y_pct, 1, true)}</td>
-                    <td className="num"><span className={`pill ${k.market_balance}`}>{k.supply_demand_index.toFixed(2)}</span></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      <header className="hero" style={{ paddingBottom: 12 }}>
+        <div className="wrap">
+          <div className="read">
+            <div className="kicker">Market balance</div>
+            <h1>Where demand outruns the housing stock</h1>
+            <p className="dek">Rents rise fastest where more people want to live than there are flats to rent. We measure both sides in every
+              district: how many flats stand empty, and how fast the population is growing.</p>
           </div>
-        </section>
-        <section className="panel c12">
-          <h2>Cities: structure vs. live market</h2>
-          <div className="tablewrap">
+          <div className="stats reveal" style={{ marginTop: 28 }}>
+            <Stat label="Tight markets" value={counts.tight} unit="districts" say={<>home to {pct((100 * popTight) / popAll, 0)} of Germany&apos;s population.</>} />
+            <Stat label="Balanced" value={counts.balanced} unit="districts" say="Supply and demand roughly match." />
+            <Stat label="Slack markets" value={counts.slack} unit="districts" say="Many empty flats, shrinking or flat population." />
+            <Stat label="Check against live listings" value={`r = ${r.toFixed(2)}`} say={<>The index {strength} agrees with how fast flats are actually let in 37 cities.</>} />
+          </div>
+        </div>
+      </header>
+
+      <section className="section">
+        <div className="wrap">
+          <div className="read reveal">
+            <div className="prose">
+              <p><strong>Supply</strong> is the <Term k="vacancy">share of flats that stood empty and available</Term> in the 2022 census. Around
+                2 to 3% is usually considered a healthy market where people can move. <strong>Demand</strong> is population change over the last five
+                years. The <Term k="supply-demand" /> combines the two, so a district with few empty flats and a growing population scores high.</p>
+            </div>
+          </div>
+          <Figure title="400 districts: empty flats versus population growth"
+            sub="Each bubble is a district, sized by population. Dashed lines mark the German middle on each axis."
+            source="Zensus 2022 (vacancy); Statistische Ämter, population 2018 to 2023."
+            howto={<>
+              <p>Top left: few empty flats and a growing population. That is where competition for flats is fiercest. Bottom right: many empty flats
+                and a shrinking population, which keeps rents low. The horizontal axis is stretched at the low end because the difference between 1%
+                and 2% empty matters far more than between 8% and 9%.</p>
+              <p>Use the search box to find your district on the chart.</p>
+            </>}>
+            <SupplyDemandScatter data={kreise} highlight={highlight} />
+          </Figure>
+          <div className="read">
+            <Takeaway>
+              Tight markets are not just a big-city problem: {tightRural} of the {counts.tight} tight districts are rural, most of them in{" "}
+              {topLands("tight").join(" and ")}. Slack markets cluster in{" "}
+              {topLands("slack", 3).join(", ").replace(/, ([^,]*)$/, " and $1")}, where so many flats stand empty that tenants have a real choice.
+            </Takeaway>
+          </div>
+        </div>
+      </section>
+
+      <section className="chapter">
+        <div className="wrap">
+          <div className="read reveal">
+            <div className="chapter-num">The extremes</div>
+            <h2>The ten tightest and ten slackest districts</h2>
+          </div>
+          <div className="split even">
+            <Figure title="Tightest" sub="Highest supply-demand index" source="ImmoDash, from Zensus 2022 and population statistics.">
+              <RankBars rows={tightest.map((k) => ({ label: k.kreis_name.split(",")[0], sub: `${pct(k.market_active_vacancy_pct)} empty · ${pct(k.population_growth_5y_pct, 1, true)} pop.`, v: k.supply_demand_index }))}
+                max={Math.max(...tightest.map((k) => k.supply_demand_index))} tone="bad" fmt="index" />
+            </Figure>
+            <Figure title="Slackest" sub="Lowest supply-demand index (shown as distance below zero)" source="ImmoDash, from Zensus 2022 and population statistics.">
+              <RankBars rows={slackest.map((k) => ({ label: k.kreis_name.split(",")[0], sub: `${pct(k.market_active_vacancy_pct)} empty · ${pct(k.population_growth_5y_pct, 1, true)} pop.`, v: -k.supply_demand_index }))}
+                max={Math.max(...slackest.map((k) => -k.supply_demand_index))} tone="good" fmt="index" />
+            </Figure>
+          </div>
+        </div>
+      </section>
+
+      <section className="chapter">
+        <div className="wrap">
+          <div className="read reveal">
+            <div className="chapter-num">Cross-check</div>
+            <h2>Does the index match what renters experience?</h2>
+            <div className="prose">
+              <p>The index uses census data, which is a snapshot. To check it, we compare it with live listing data for the 37 cities: how many{" "}
+                <Term k="days-on-market" /> a flat stays online and how many are gone within a week. The correlation is{" "}
+                <strong>{r.toFixed(2)}</strong>{Math.abs(r) >= 0.4 ? ", so where the census says a market is tight, flats really do go faster." : "."}</p>
+            </div>
+          </div>
+          <div className="tablewrap reveal" style={{ marginTop: 18 }}>
             <table>
-              <thead><tr><th>City</th><th>Market</th><th className="num">Vacancy</th><th className="num">Population 5y</th><th className="num">Days on market</th><th className="num">Live pressure</th></tr></thead>
+              <thead><tr><th>City</th><th>Market</th><th className="num">Empty flats</th><th className="num">Population, 5 y</th><th className="num">Days online</th><th className="num">Index</th></tr></thead>
               <tbody>
-                {cities.map((c) => (
+                {cityRows.map((c) => (
                   <tr key={c.city}>
-                    <td><Link href={`/cities/${slugOf[c.city]}`}>{c.city_en}</Link></td>
-                    <td><span className={`pill ${c.market_balance}`}>{c.market_balance}</span></td>
+                    <td><Link href={`/cities/${slugOf[c.city]}`} style={{ fontWeight: 600 }}>{c.city_en}</Link></td>
+                    <td>{c.market_balance && <span className={`pill ${c.market_balance}`}>{c.market_balance}</span>}</td>
                     <td className="num">{pct(c.market_active_vacancy_pct)}</td>
                     <td className="num">{pct(c.population_growth_5y_pct, 1, true)}</td>
                     <td className="num">{num(c.time_on_market_days_4q)}</td>
-                    <td className="num">{c.demand_pressure_score?.toFixed(2) ?? "–"}</td>
+                    <td className="num">{c.supply_demand_index?.toFixed(2) ?? "–"}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
     </>
   );
 }

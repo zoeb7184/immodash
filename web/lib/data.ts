@@ -10,8 +10,19 @@ import type {
 const DIR = join(process.cwd(), "public", "data");
 const cache = new Map<string, unknown>();
 
+const fold = (s: string) => s.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/ß/g, "ss");
+
+/** English names in the source drop umlauts ("Dusseldorf"); show the German spelling when that is all that differs. */
+function displayNames<T>(rows: T): T {
+  if (!Array.isArray(rows)) return rows;
+  for (const r of rows as { city?: string; city_en?: string }[]) {
+    if (r && typeof r.city === "string" && typeof r.city_en === "string" && r.city !== r.city_en && fold(r.city) === r.city_en) r.city_en = r.city;
+  }
+  return rows;
+}
+
 function read<T>(name: string): T {
-  if (!cache.has(name)) cache.set(name, JSON.parse(readFileSync(join(DIR, name), "utf-8")));
+  if (!cache.has(name)) cache.set(name, displayNames(JSON.parse(readFileSync(join(DIR, name), "utf-8"))));
   return cache.get(name) as T;
 }
 
