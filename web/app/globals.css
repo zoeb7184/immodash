@@ -335,12 +335,31 @@ pre { font: 12px/1.5 var(--mono); background: var(--surface-2); padding: 14px; b
 .defs p { margin: 6px 0 0; color: var(--ink-2); font-size: 15.5px; line-height: 1.6; }
 .defs code { display: block; margin-top: 8px; font: 12.5px/1.6 var(--mono); color: var(--muted); }
 
-.foot { border-top: 1px solid var(--line); margin-top: 32px; }
-.foot-inner { max-width: var(--wide); margin: 0 auto; padding: 40px var(--gutter) 56px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px;
-  font: 13.5px/1.65 var(--sans); color: var(--muted); }
-.foot-inner b { color: var(--ink); font: 650 17px var(--sans); letter-spacing: -0.02em; }
-.foot-inner a { color: var(--ink-2); }
-@media (min-width: 721px) { .foot-inner { grid-template-columns: 1.2fr 1fr; } }
+.foot { border-top: 1px solid var(--line); margin-top: 32px; background: var(--surface); color: var(--muted); font: 14px/1.6 var(--sans); }
+.foot-main, .foot-legal { max-width: var(--wide); margin: 0 auto; padding-inline: var(--gutter); }
+.foot-main { padding-block: clamp(40px, 4.5vw, 72px) 36px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 40px; }
+.foot-brand { display: grid; gap: 16px; align-content: start; max-width: 44ch; }
+.foot-brand .brand { justify-self: start; color: var(--ink); }
+.foot-tag { margin: 0; color: var(--ink-2); text-wrap: pretty; }
+.foot-status { margin: 0; display: flex; gap: 10px; align-items: baseline; font-size: 13px; }
+.live-dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: #22a35a; box-shadow: 0 0 0 3px color-mix(in srgb, #22a35a 22%, transparent); transform: translateY(-1px); }
+.foot-social { display: flex; gap: 8px; }
+.foot-social .icon-btn { display: grid; place-items: center; text-decoration: none; }
+.foot-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 24px; }
+.foot-h { margin: 0 0 14px; font: 600 13px/1.3 var(--sans); color: var(--ink); letter-spacing: 0; }
+.foot-cols ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.foot-cols a { color: var(--ink-2); text-decoration: none; display: inline-flex; align-items: center; gap: 4px; transition: color 0.15s ease; }
+.foot-cols a:hover { color: var(--accent); }
+.foot-cols a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.foot-cols .ext { opacity: 0.55; }
+.foot-legal { padding-block: 20px 28px; display: grid; gap: 8px; font-size: 12.5px; line-height: 1.55; border-top: 1px solid var(--line); }
+.foot-legal p { margin: 0; text-wrap: pretty; }
+@media (min-width: 561px) { .foot-cols { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 921px) {
+  .foot-main { grid-template-columns: minmax(0, 1.2fr) minmax(0, 2fr); gap: clamp(48px, 6vw, 120px); }
+  .foot-legal { grid-template-columns: minmax(0, 1.2fr) minmax(0, 2fr); column-gap: clamp(48px, 6vw, 120px); }
+}
+@media (pointer: coarse) { .foot-cols a { min-height: 44px; } .foot-cols ul { gap: 0; } }
 
 
 /* motion: one authored moment (the hero map paints from cheapest to dearest district). Everything else is static and visible. */

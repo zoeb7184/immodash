@@ -124,7 +124,7 @@ export default function Methodology() {
               <a className="textlink" href="https://zoeb7184.github.io">Portfolio</a>
             </div>
           </div>
-          <div className="reveal">
+          <div className="reveal" id="sources" style={{ scrollMarginTop: 96 }}>
             <h2>Sources</h2>
             <div className="tablewrap" style={{ marginTop: 18 }}>
               <table>

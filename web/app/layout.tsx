@@ -4,7 +4,7 @@ import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 import { Nav } from "@/components/Nav";
 import { data } from "@/lib/data";
-import { monthLong } from "@/lib/format";
+import { Footer } from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: { default: "ImmoDash · What renting in Germany really costs", template: "%s · ImmoDash" },
@@ -31,23 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <a className="skip" href="#content">Skip to content</a>
         <Nav />
         <main id="content">{children}</main>
-        <footer className="foot">
-          <div className="foot-inner">
-            <div>
-              <b>ImmoDash</b>
-              <p style={{ margin: "6px 0 0" }}>
-                An independent data project by <a href="https://github.com/zoeb7184">Zoeb Ali Khan</a>. Data up to{" "}
-                {monthLong(meta.latest_month)}, refreshed automatically every week (last run {meta.generated_at.slice(0, 10)}).
-                Source code on <a href="https://github.com/zoeb7184/immodash">GitHub</a>.
-              </p>
-            </div>
-            <p style={{ margin: 0 }}>
-              Data: Zensus 2022 and VGR der Länder (© Statistische Ämter des Bundes und der Länder, dl-de/by-2-0), GREIX
-              Mietpreisindex (Kiel Institut für Weltwirtschaft), Deutsche Bundesbank, © GeoBasis-DE / BKG. Asking-rent figures
-              outside the 37 GREIX cities are model estimates, not listings. Not financial advice.
-            </p>
-          </div>
-        </footer>
+        <Footer latestMonth={meta.latest_month} generatedAt={meta.generated_at} />
       </body>
     </html>
   );
