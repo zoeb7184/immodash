@@ -13,6 +13,7 @@ export const metadata: Metadata = {
     "An interactive guide to German rents: how fast asking rents are rising in 37 cities, what a flat costs against local incomes, where the market is tightest, and a 12-month outlook. Rebuilt every week from open data.",
 };
 export const viewport: Viewport = {
+  width: "device-width", initialScale: 1, viewportFit: "cover",
   themeColor: [{ media: "(prefers-color-scheme: light)", color: "#f6f6f7" }, { media: "(prefers-color-scheme: dark)", color: "#0f1012" }],
 };
 

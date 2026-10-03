@@ -8,9 +8,9 @@ export function RankBars({ rows, max, tone, fmt }: {
     <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 10 }}>
       {rows.map((r, i) => (
         <li key={r.label + i} title={r.note} style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto", gap: "2px 12px", alignItems: "baseline" }}>
-          <span style={{ font: "600 14px var(--sans)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          <span style={{ font: "600 14px var(--sans)", minWidth: 0 }}>
             <span className="muted" style={{ fontWeight: 500, marginRight: 6 }}>{i + 1}</span>{r.label}
-            {r.sub && <span className="muted" style={{ fontWeight: 400, fontSize: 12, marginLeft: 6 }}>{r.sub}</span>}
+            {r.sub && <span className="muted" style={{ display: "block", fontWeight: 400, fontSize: 12.5, marginTop: 1 }}>{r.sub}</span>}
           </span>
           <span style={{ font: "600 14px var(--sans)", fontVariantNumeric: "tabular-nums" }}>{f(r.v)}</span>
           <span style={{ gridColumn: "1 / -1", height: 6 }}>

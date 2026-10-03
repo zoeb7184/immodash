@@ -24,7 +24,7 @@ export function HeroMap({ rents, names }: { rents: Record<string, number>; names
 
   return (
     <div className="hero-visual">
-      <div className="mapwrap" onMouseLeave={() => setHover(null)} style={{ maxWidth: 440, marginInline: "auto" }}>
+      <div className="mapwrap" onMouseLeave={() => setHover(null)} style={{ maxWidth: "min(100%, 680px, calc((100svh - 230px) * 0.737))", minWidth: "min(100%, 300px)", marginInline: "auto" }}>
         {paths && t["--q1"] ? (
           <svg className="hero-map" viewBox={`0 0 ${MAP_W} ${MAP_H}`} style={{ width: "100%", display: "block" }} role="img"
             aria-label="Map of Germany's 400 districts coloured by estimated asking rent">
