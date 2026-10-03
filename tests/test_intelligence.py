@@ -71,3 +71,13 @@ def test_structural_and_live_pressure_agree(api_client):
     df = pd.DataFrame(api_client.get("/cities/supply-demand").json()).dropna()
     r = np.corrcoef(df["supply_demand_index"], df["demand_pressure_score"])[0, 1]
     assert r > 0.5
+
+
+def test_grounding_check_reads_thousands_and_percentile_labels():
+    facts = {"rent_60sqm_eur_month": 1394.0, "p25_eur_sqm": 20.0, "p75_eur_sqm": 26.94, "rank": 1,
+             "median": 15.18}
+    ok = ("A 60 m\u00b2 flat costs about 1,394 \u20ac (or 1\u202f394 \u20ac, 1 394 \u20ac); the 25th\u201375th "
+          "percentile range is 20.00 to 26.94 \u20ac/m\u00b2, the 25-75 percentile band too; median 15,18.")
+    assert ungrounded_numbers(ok, facts) == []
+    # labels are only exempt next to "percentile"; a wrong value or rank is still caught
+    assert set(ungrounded_numbers("rents rose 25% to 1,500 \u20ac, ranking 7th", facts)) == {"25", "1500", "7"}

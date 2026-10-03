@@ -131,11 +131,24 @@ def _numbers_in_facts(facts: Any) -> list[float]:
     return out
 
 
+# "1,394" / "1 394" (thin or no-break space) -> "1394"; "15,18" (decimal comma) is left alone
+_THOUSANDS = re.compile(r"(?<![\d.,])(\d{1,3})((?:[,\u202f\u00a0 ]\d{3})+)(?![\d]|[.,]\d)")
+# percentile labels ("25th to 75th percentile", "25-75 percentile range") name a statistic, not a value
+_Q = r"(?:25|50|75)(?:st|nd|rd|th)?"
+_SEP = r"[\s\-\u2010\u2011\u2013\u2014/]"
+_PERCENTILE = re.compile(rf"\b{_Q}(?:{_SEP}*(?:and|to|{_SEP}){_SEP}*{_Q})?(?={_SEP}*(?:percentile|quartile))", re.I)
+
+
+def _normalise_numbers(text: str) -> str:
+    text = _PERCENTILE.sub(" ", text)
+    return _THOUSANDS.sub(lambda m: m.group(1) + re.sub(r"\D", "", m.group(2)), text)
+
+
 def ungrounded_numbers(text: str, facts: dict[str, Any]) -> list[str]:
     """Numbers in `text` that cannot be matched to a fact (tolerating rounding and sign)."""
     allowed = _numbers_in_facts(facts) + [60, 2, 12, 37, 80, 5, 3]  # reference constants named in the prompt
     bad = []
-    for tok in _NUM.findall(text):
+    for tok in _NUM.findall(_normalise_numbers(text)):
         v = abs(float(tok.replace(",", ".")))
         if not any(abs(v - abs(a)) <= (0.051 if abs(a) < 100 else 0.006 * abs(a)) for a in allowed):
             bad.append(tok)
