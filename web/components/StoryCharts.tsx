@@ -11,7 +11,7 @@ type Row = { city: string; city_en: string; slug: string; population: number | n
 function ShowAll({ total, shown, onToggle, all }: { total: number; shown: number; onToggle: () => void; all: boolean }) {
   if (total <= shown && !all) return null;
   return (
-    <button className="btn ghost" style={{ marginTop: 10, padding: "7px 14px", fontSize: 13 }} onClick={onToggle}>
+    <button className="chip" style={{ marginTop: 14 }} onClick={onToggle}>
       {all ? "Show fewer cities" : `Show all ${total} cities`}
     </button>
   );

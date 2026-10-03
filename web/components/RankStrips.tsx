@@ -15,7 +15,7 @@ export type Strip = {
 /** Spread dots that would overlap: alternate above and below the line. */
 function dodge<T extends { cx: number }>(pts: T[]): (T & { dy: number })[] {
   const placed: (T & { dy: number })[] = [];
-  const offsets = [0, -9, 9, -18, 18];
+  const offsets = [0, -8, 8, -16, 16];
   for (const p of [...pts].sort((a, b) => a.cx - b.cx)) {
     const dy = offsets.find((o) => !placed.some((q) => q.dy === o && Math.abs(q.cx - p.cx) < 9)) ?? 0;
     placed.push({ ...p, dy });
@@ -49,13 +49,13 @@ export function RankStrips({ strips, city }: { strips: Strip[]; city: string }) 
               <span style={{ font: "400 15px var(--serif)", color: "var(--ink-2)" }}><b style={{ color: "var(--ink)", fontFamily: "var(--sans)" }}>{fmtV(s.fmt, me.v)}</b> · {words}</span>
             </div>
             <div style={{ position: "relative" }}>
-              <svg className="svgchart" width={w} height={40} role="img" aria-label={`${s.label}: ${fmtV(s.fmt, me.v)}, ${words}`}>
-                <line x1={pad} x2={w - pad} y1={20} y2={20} stroke="var(--line)" strokeWidth={2} />
+              <svg className="svgchart" width={w} height={52} role="img" aria-label={`${s.label}: ${fmtV(s.fmt, me.v)}, ${words}`}>
+                <line x1={pad} x2={w - pad} y1={28} y2={28} stroke="var(--line)" strokeWidth={2} />
                 {dodge(vals.filter((v) => v.city !== city).map((v) => ({ ...v, cx: x(v.v) }))).map((v) => (
-                  <circle key={v.city} cx={v.cx} cy={20 + v.dy} r={4.5} fill="var(--context)" stroke="var(--surface)" strokeWidth={1.5}
+                  <circle key={v.city} cx={v.cx} cy={28 + v.dy} r={4.5} fill="var(--context)" stroke="var(--surface)" strokeWidth={1.5}
                     onMouseEnter={() => setHover({ strip: s.key, city: v.city, x: v.cx })} onMouseLeave={() => setHover(null)} />
                 ))}
-                <circle cx={x(me.v)} cy={20} r={8} fill="var(--s1)" stroke="var(--surface)" strokeWidth={2.5} />
+                <circle cx={x(me.v)} cy={28} r={8} fill="var(--s1)" stroke="var(--surface)" strokeWidth={2.5} />
               </svg>
               {hv && (
                 <div className="tooltip" style={{ position: "absolute", left: Math.min(hover!.x + 8, w - 150), top: -30, pointerEvents: "none", padding: "4px 8px" }}>

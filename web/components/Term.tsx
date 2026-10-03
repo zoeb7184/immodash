@@ -22,7 +22,7 @@ export function Term({ k, children }: { k: GlossaryKey; children?: ReactNode }) 
   return (
     <span className="term" ref={ref} onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
       <button type="button" aria-describedby={open ? id : undefined} aria-expanded={open}
-        onClick={() => setOpen((o) => !o)} onFocus={() => setOpen(true)} onBlur={() => setOpen(false)}>
+        onClick={() => setOpen(true)} onFocus={() => setOpen(true)} onBlur={() => setOpen(false)}>
         {children ?? g.term.toLowerCase()}
       </button>
       {open && (

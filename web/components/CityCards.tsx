@@ -40,7 +40,7 @@ export function CityCards({ cities }: { cities: CardCity[] }) {
           <input id="cc-q" type="search" placeholder="e.g. Köln or Sachsen" value={q} onChange={(e) => setQ(e.target.value)} />
         </div>
         <div className="seg" role="group" aria-label="Sort cities">
-          {([["rent", "Most expensive"], ["rise", "Rising fastest"], ["afford", "Most affordable"], ["name", "A–Z"]] as [Sort, string][]).map(([k, l]) => (
+          {([["rent", "Most expensive"], ["rise", "Rising fastest"], ["afford", "Most affordable"], ["name", "A to Z"]] as [Sort, string][]).map(([k, l]) => (
             <button key={k} aria-pressed={sort === k} onClick={() => setSort(k)}>{l}</button>
           ))}
         </div>

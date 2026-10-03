@@ -13,8 +13,8 @@ export function RankBars({ rows, max, tone, fmt }: {
             {r.sub && <span className="muted" style={{ fontWeight: 400, fontSize: 12, marginLeft: 6 }}>{r.sub}</span>}
           </span>
           <span style={{ font: "600 14px var(--sans)", fontVariantNumeric: "tabular-nums" }}>{f(r.v)}</span>
-          <span style={{ gridColumn: "1 / -1", height: 8, background: "var(--surface-2)", borderRadius: 4 }}>
-            <span style={{ display: "block", height: "100%", width: `${(100 * r.v) / max}%`, background: fill, borderRadius: "0 4px 4px 0" }} />
+          <span style={{ gridColumn: "1 / -1", height: 6 }}>
+            <span style={{ display: "block", height: "100%", width: `${(100 * r.v) / max}%`, background: fill, borderRadius: "0 3px 3px 0" }} />
           </span>
         </li>
       ))}

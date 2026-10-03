@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { List, X } from "@phosphor-icons/react";
 import { ThemeToggle } from "./ThemeToggle";
 
 const LINKS = [
@@ -22,10 +23,10 @@ export function Nav() {
     <header className="topbar">
       <div className="topbar-inner" style={{ position: "relative" }}>
         <Link href="/" className="brand" aria-label="ImmoDash home">
-          <b>ImmoDash</b> <small>German rents, explained</small>
+          <span className="brand-mark" aria-hidden><span /></span><b>ImmoDash</b>
         </Link>
         <button className="icon-btn menu-btn" aria-label="Menu" aria-expanded={open} aria-controls="mainnav" onClick={() => setOpen((o) => !o)}>
-          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>
+          {open ? <X size={18} weight="bold" aria-hidden /> : <List size={18} weight="bold" aria-hidden />}
         </button>
         <nav className="nav" id="mainnav" aria-label="Main" data-open={open}>
           {LINKS.map((l) => {

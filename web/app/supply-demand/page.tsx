@@ -3,7 +3,7 @@ import Link from "next/link";
 import { RankBars } from "@/components/RankBars";
 import { SupplyDemandScatter } from "@/components/SupplyDemandCharts";
 import { Term } from "@/components/Term";
-import { Figure, Stat, Takeaway } from "@/components/ui";
+import { Figure, Head, Stat, Takeaway } from "@/components/ui";
 import { data } from "@/lib/data";
 import { num, pct } from "@/lib/format";
 
@@ -40,27 +40,28 @@ export default function SupplyDemand() {
 
   return (
     <>
-      <header className="hero" style={{ paddingBottom: 12 }}>
+      <header className="hero" style={{ paddingBottom: 32 }}>
         <div className="wrap">
-          <div className="read">
-            <div className="kicker">Market balance</div>
-            <h1>Where demand outruns the housing stock</h1>
-            <p className="dek">Rents rise fastest where more people want to live than there are flats to rent. We measure both sides in every
-              district: how many flats stand empty, and how fast the population is growing.</p>
-          </div>
-          <div className="stats reveal" style={{ marginTop: 28 }}>
+          <h1 className="enter">Where demand outruns the housing stock</h1>
+          <p className="lead enter">Rents rise fastest where more people want to live than there are flats. We measure both sides in every district.</p>
+        </div>
+      </header>
+      <section className="band" aria-label="Key figures">
+        <div className="wrap">
+          <div className="stats">
             <Stat label="Tight markets" value={counts.tight} unit="districts" say={<>home to {pct((100 * popTight) / popAll, 0)} of Germany&apos;s population.</>} />
             <Stat label="Balanced" value={counts.balanced} unit="districts" say="Supply and demand roughly match." />
             <Stat label="Slack markets" value={counts.slack} unit="districts" say="Many empty flats, shrinking or flat population." />
             <Stat label="Check against live listings" value={`r = ${r.toFixed(2)}`} say={<>The index {strength} agrees with how fast flats are actually let in 37 cities.</>} />
           </div>
         </div>
-      </header>
+      </section>
 
       <section className="section">
         <div className="wrap">
-          <div className="read reveal">
-            <div className="prose">
+          <div className="reveal" style={{ marginBottom: 36 }}>
+            <h2>Empty flats against population growth</h2>
+            <div className="prose" style={{ marginTop: 14 }}>
               <p><strong>Supply</strong> is the <Term k="vacancy">share of flats that stood empty and available</Term> in the 2022 census. Around
                 2 to 3% is usually considered a healthy market where people can move. <strong>Demand</strong> is population change over the last five
                 years. The <Term k="supply-demand" /> combines the two, so a district with few empty flats and a growing population scores high.</p>
@@ -77,7 +78,7 @@ export default function SupplyDemand() {
             </>}>
             <SupplyDemandScatter data={kreise} highlight={highlight} />
           </Figure>
-          <div className="read">
+          <div style={{ maxWidth: 760 }}>
             <Takeaway>
               Tight markets are not just a big-city problem: {tightRural} of the {counts.tight} tight districts are rural, most of them in{" "}
               {topLands("tight").join(" and ")}. Slack markets cluster in{" "}
@@ -87,37 +88,33 @@ export default function SupplyDemand() {
         </div>
       </section>
 
-      <section className="chapter">
+      <section className="section band" style={{ paddingBottom: 72 }}>
         <div className="wrap">
-          <div className="read reveal">
-            <div className="chapter-num">The extremes</div>
-            <h2>The ten tightest and ten slackest districts</h2>
-          </div>
+          <Head title="The ten tightest and ten slackest districts" />
           <div className="split even">
             <Figure title="Tightest" sub="Highest supply-demand index" source="ImmoDash, from Zensus 2022 and population statistics.">
-              <RankBars rows={tightest.map((k) => ({ label: k.kreis_name.split(",")[0], sub: `${pct(k.market_active_vacancy_pct)} empty · ${pct(k.population_growth_5y_pct, 1, true)} pop.`, v: k.supply_demand_index }))}
+              <RankBars rows={tightest.map((k) => ({ label: k.kreis_name.split(",")[0], sub: `${pct(k.market_active_vacancy_pct)} empty, ${pct(k.population_growth_5y_pct, 1, true)} pop.`, v: k.supply_demand_index }))}
                 max={Math.max(...tightest.map((k) => k.supply_demand_index))} tone="bad" fmt="index" />
             </Figure>
             <Figure title="Slackest" sub="Lowest supply-demand index (shown as distance below zero)" source="ImmoDash, from Zensus 2022 and population statistics.">
-              <RankBars rows={slackest.map((k) => ({ label: k.kreis_name.split(",")[0], sub: `${pct(k.market_active_vacancy_pct)} empty · ${pct(k.population_growth_5y_pct, 1, true)} pop.`, v: -k.supply_demand_index }))}
+              <RankBars rows={slackest.map((k) => ({ label: k.kreis_name.split(",")[0], sub: `${pct(k.market_active_vacancy_pct)} empty, ${pct(k.population_growth_5y_pct, 1, true)} pop.`, v: -k.supply_demand_index }))}
                 max={Math.max(...slackest.map((k) => -k.supply_demand_index))} tone="good" fmt="index" />
             </Figure>
           </div>
         </div>
       </section>
 
-      <section className="chapter">
-        <div className="wrap">
-          <div className="read reveal">
-            <div className="chapter-num">Cross-check</div>
+      <section className="section">
+        <div className="wrap split">
+          <div className="sticky reveal">
             <h2>Does the index match what renters experience?</h2>
-            <div className="prose">
+            <div className="prose" style={{ marginTop: 14 }}>
               <p>The index uses census data, which is a snapshot. To check it, we compare it with live listing data for the 37 cities: how many{" "}
                 <Term k="days-on-market" /> a flat stays online and how many are gone within a week. The correlation is{" "}
                 <strong>{r.toFixed(2)}</strong>{Math.abs(r) >= 0.4 ? ", so where the census says a market is tight, flats really do go faster." : "."}</p>
             </div>
           </div>
-          <div className="tablewrap reveal" style={{ marginTop: 18 }}>
+          <div className="tablewrap reveal">
             <table>
               <thead><tr><th>City</th><th>Market</th><th className="num">Empty flats</th><th className="num">Population, 5 y</th><th className="num">Days online</th><th className="num">Index</th></tr></thead>
               <tbody>
@@ -128,7 +125,7 @@ export default function SupplyDemand() {
                     <td className="num">{pct(c.market_active_vacancy_pct)}</td>
                     <td className="num">{pct(c.population_growth_5y_pct, 1, true)}</td>
                     <td className="num">{num(c.time_on_market_days_4q)}</td>
-                    <td className="num">{c.supply_demand_index?.toFixed(2) ?? "–"}</td>
+                    <td className="num">{c.supply_demand_index?.toFixed(2) ?? "n/a"}</td>
                   </tr>
                 ))}
               </tbody>

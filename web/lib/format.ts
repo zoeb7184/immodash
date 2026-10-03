@@ -1,14 +1,14 @@
 export const eur = (v: number | null | undefined, d = 2) =>
-  v == null ? "–" : `${v.toLocaleString("en-GB", { minimumFractionDigits: d, maximumFractionDigits: d })} €`;
+  v == null ? "n/a" : `${v.toLocaleString("en-GB", { minimumFractionDigits: d, maximumFractionDigits: d })} €`;
 export const num = (v: number | null | undefined, d = 0) =>
-  v == null ? "–" : v.toLocaleString("en-GB", { minimumFractionDigits: d, maximumFractionDigits: d });
+  v == null ? "n/a" : v.toLocaleString("en-GB", { minimumFractionDigits: d, maximumFractionDigits: d });
 export const pct = (v: number | null | undefined, d = 1, sign = false) =>
-  v == null ? "–" : `${sign && v > 0 ? "+" : ""}${v.toFixed(d)}%`;
+  v == null ? "n/a" : `${sign && v > 0 ? "+" : ""}${v.toFixed(d)}%`;
 export const month = (iso: string) =>
   new Date(iso).toLocaleDateString("en-GB", { month: "short", year: "numeric", timeZone: "UTC" });
 export const monthLong = (iso: string) =>
   new Date(iso).toLocaleDateString("en-GB", { month: "long", year: "numeric", timeZone: "UTC" });
-export const sqm = (v: number | null | undefined, d = 2) => (v == null ? "–" : `${num(v, d)} €/m²`);
+export const sqm = (v: number | null | undefined, d = 2) => (v == null ? "n/a" : `${num(v, d)} €/m²`);
 
 /** "1 in 3", "2 in 5" … for shares, so readers don't have to parse decimals. */
 export function inN(share: number): string {

@@ -163,7 +163,7 @@ export function Finder() {
         <div>
           {selHit ? (
             <div className="card" style={{ marginBottom: 16 }}>
-              <div className="kicker" style={{ color: "var(--muted)" }}>{selHit.land} · {selHit.urban ? "City district" : "Rural district"}</div>
+              <div className="meta">{selHit.land} · {selHit.urban ? "City district" : "Rural district"}</div>
               <h3 style={{ fontSize: 24, margin: "4px 0 8px" }}>{selHit.name}</h3>
               <p className="prose" style={{ fontSize: 17, margin: 0 }}>
                 A {sqm} m² flat ({segment.label.toLowerCase()}) is estimated at <b>{eur(selHit.est)}</b> per m², about{" "}

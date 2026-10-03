@@ -1,4 +1,4 @@
-// Server-safe building blocks for the editorial layout.
+// Server-safe building blocks for the layout.
 import type { ReactNode } from "react";
 
 export function Figure({ title, sub, children, source, howto, numbers, controls, id }: {
@@ -6,7 +6,7 @@ export function Figure({ title, sub, children, source, howto, numbers, controls,
   controls?: ReactNode; id?: string;
 }) {
   return (
-    <figure className="figure reveal" id={id} style={{ marginInline: 0 }}>
+    <figure className="figure reveal" id={id}>
       <div className="figure-head">
         <div>
           <p className="figure-title">{title}</p>
@@ -15,7 +15,7 @@ export function Figure({ title, sub, children, source, howto, numbers, controls,
         {controls}
       </div>
       <div className="figure-body">{children}</div>
-      {source && <figcaption className="figure-foot"><span>Source: {source}</span></figcaption>}
+      {source && <figcaption className="figure-foot">Source: {source}</figcaption>}
       {howto && (
         <details className="howto">
           <summary>How to read this chart</summary>
@@ -25,7 +25,7 @@ export function Figure({ title, sub, children, source, howto, numbers, controls,
       {numbers && (
         <details className="numbers">
           <summary>Show the numbers</summary>
-          <div className="tablewrap" style={{ maxHeight: 420, overflowY: "auto", marginTop: 6 }}>{numbers}</div>
+          <div className="tablewrap" style={{ maxHeight: 420, overflowY: "auto", marginTop: 8 }}>{numbers}</div>
         </details>
       )}
     </figure>
@@ -41,18 +41,13 @@ export function Takeaway({ children, label = "What this means" }: { children: Re
   );
 }
 
-export function Chapter({ n, title, children, intro, id }: { n?: string; title: ReactNode; intro?: ReactNode; children?: ReactNode; id?: string }) {
+/** Stacked section head: headline, then a short lead. Never side by side. */
+export function Head({ title, children }: { title: ReactNode; children?: ReactNode }) {
   return (
-    <section className="chapter" id={id}>
-      <div className="wrap">
-        <div className="read reveal">
-          {n && <div className="chapter-num">{n}</div>}
-          <h2>{title}</h2>
-          {intro && <div className="prose">{intro}</div>}
-        </div>
-        {children}
-      </div>
-    </section>
+    <div className="head reveal">
+      <h2>{title}</h2>
+      {children && <div className="lead">{children}</div>}
+    </div>
   );
 }
 

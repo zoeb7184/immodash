@@ -17,17 +17,14 @@ export default function Cities() {
   }));
   return (
     <>
-      <header className="hero" style={{ paddingBottom: 8 }}>
+      <header className="hero" style={{ paddingBottom: 24 }}>
         <div className="wrap">
-          <div className="read">
-            <div className="kicker">City profiles</div>
-            <h1>37 cities, one page each</h1>
-            <p className="dek">Every profile has an AI-written market summary, a street-level rent map, how fast flats are let and a 12-month
-              outlook. Lines show the median <Term k="asking-rent" /> since 2020, up to {monthLong(meta.latest_month)}.</p>
-          </div>
+          <h1 className="enter">37 cities, one page each</h1>
+          <p className="lead enter">An AI-written summary, a street-level rent map and a 12-month outlook for every city. Lines show the median{" "}
+            <Term k="asking-rent" /> since 2020, up to {monthLong(meta.latest_month)}.</p>
         </div>
       </header>
-      <section className="section">
+      <section className="section tight">
         <div className="wrap"><CityCards cities={cards} /></div>
       </section>
     </>

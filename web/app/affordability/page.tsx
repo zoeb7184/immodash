@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Finder } from "@/components/Finder";
 import { RankBars } from "@/components/RankBars";
 import { Term } from "@/components/Term";
-import { Figure, Takeaway } from "@/components/ui";
+import { Figure, Head, Takeaway } from "@/components/ui";
 import { data } from "@/lib/data";
 import { eur, median, pct } from "@/lib/format";
 
@@ -19,17 +19,14 @@ export default function Affordability() {
     note: `${eur(k.rent_eur_sqm)}/m² rent, ${eur(k.disposable_income_per_resident_eur, 0)} income per resident` }));
   return (
     <>
-      <header className="hero" style={{ paddingBottom: 8 }}>
+      <header className="hero" style={{ paddingBottom: 24 }}>
         <div className="wrap">
-          <div className="read">
-            <div className="kicker">Budget finder · all 400 districts</div>
-            <h1>Where can I afford to live?</h1>
-            <p className="dek">Set your budget and flat size. The map shows every <Term k="kreis">district</Term> in Germany where a flat
-              like that is likely to be advertised within your budget, with an estimate for today, not 2022.</p>
-          </div>
+          <h1 className="enter">Where can I afford to live?</h1>
+          <p className="lead enter">Set a budget and a flat size. The map shows every <Term k="kreis">district</Term> where a flat like that is
+            likely to be advertised within it today.</p>
         </div>
       </header>
-      <section className="section" style={{ paddingTop: 12 }}>
+      <section className="section tight" style={{ paddingTop: 0 }}>
         <div className="wrap">
           <Finder />
           <details className="howto" style={{ marginTop: 18 }}>
@@ -45,17 +42,12 @@ export default function Affordability() {
         </div>
       </section>
 
-      <section className="chapter">
+      <section className="section band" style={{ paddingBottom: 72, marginTop: 64 }}>
         <div className="wrap">
-          <div className="read reveal">
-            <div className="chapter-num">Rent against income</div>
-            <h2>Where rent takes the biggest bite out of local pay</h2>
-            <div className="prose">
-              <p>A cheap rent is not affordable if local wages are low, and a high rent can be manageable where people earn more. The{" "}
-                <Term k="rent-burden" /> combines both: the census rent for a 60 m² flat as a share of what two average residents of the
-                district earn after tax. Across all 400 districts the middle value is <strong>{pct(med, 1)}</strong>.</p>
-            </div>
-          </div>
+          <Head title="Where rent takes the biggest bite out of local pay">
+            A cheap rent is not affordable if wages are low. The <Term k="rent-burden" /> combines both: census rent for 60 m² as a share of
+            two average residents&apos; net income. Across all 400 districts the middle value is <b style={{ color: "var(--ink)" }}>{pct(med, 1)}</b>.
+          </Head>
           <div className="split even">
             <Figure title="Highest rent burden" sub="Rent for 60 m² as a share of two residents' net income, 2022." source="Zensus 2022; VGR der Länder.">
               <RankBars rows={bar(worst)} max={Math.max(...worst.map((w) => w.rent_burden_pct))} tone="bad" fmt="pct" />
@@ -64,7 +56,7 @@ export default function Affordability() {
               <RankBars rows={bar(best)} max={Math.max(...worst.map((w) => w.rent_burden_pct))} tone="good" fmt="pct" />
             </Figure>
           </div>
-          <div className="read">
+          <div style={{ maxWidth: 760 }}>
             <Takeaway>
               {words(worst.filter((w) => w.is_urban_district).length)} of the twelve least affordable districts are cities, led by{" "}
               {worst.slice(0, 3).map((w) => w.kreis_name.split(",")[0]).join(", ")}: rents there are high and incomes, though above average,

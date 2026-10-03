@@ -126,7 +126,7 @@ export function KreisMap({ afford, sd, asking, citySlugs }: {
             <div className="tooltip" style={{ position: "absolute", left: Math.min(hover.x + 14, 300), top: hover.y + 14, pointerEvents: "none" }}>
               <b>{h.a.kreis_name.split(",")[0]}</b> <span className="tt-k">{h.a.land_name}</span><br />
               Today about {eur(h.r?.estimated_asking_rent_eur_sqm)}/m² · 2022 leases {eur(h.a.rent_eur_sqm)}<br />
-              <span className="tt-k">Affordability {num(h.a.affordability_index)} · market {h.s?.market_balance ?? "–"}</span>
+              <span className="tt-k">Affordability {num(h.a.affordability_index)} · market {h.s?.market_balance ?? "n/a"}</span>
             </div>
           )}
         </div>
@@ -136,7 +136,7 @@ export function KreisMap({ afford, sd, asking, citySlugs }: {
       <aside className="card">
         {s?.a ? (
           <>
-            <div className="kicker" style={{ color: "var(--muted)" }}>{s.a.land_name} · {s.a.is_urban_district ? "City district" : "Rural district"}</div>
+            <div className="meta">{s.a.land_name} · {s.a.is_urban_district ? "City district" : "Rural district"}</div>
             <h3 style={{ fontSize: 26, margin: "4px 0 10px" }}>{nm}</h3>
             <div className="prose" style={{ fontSize: 17 }}>
               <p>A new lease here is estimated at <b>{eur(s.r?.estimated_asking_rent_eur_sqm)}</b> per m²

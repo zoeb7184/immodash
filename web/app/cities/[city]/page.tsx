@@ -9,7 +9,7 @@ import { PressureChart } from "@/components/PressureChart";
 import { RankStrips, type Strip } from "@/components/RankStrips";
 import { RentCheck } from "@/components/RentCheck";
 import { Term } from "@/components/Term";
-import { Figure, Stat, Takeaway } from "@/components/ui";
+import { Figure, Head, Stat, Takeaway } from "@/components/ui";
 import { data } from "@/lib/data";
 import { eur, inN, monthLong, num, ordinal, pct } from "@/lib/format";
 import { rentCheckCities } from "@/lib/story";
@@ -75,73 +75,70 @@ export default async function CityPage({ params }: Props) {
 
   return (
     <>
-      <header className="hero" style={{ paddingBottom: 12 }}>
+      <header className="hero">
         <div className="wrap">
-          <div className="crumbs">
+          <div className="crumbs enter" style={{ marginBottom: 28 }}>
             <Link href="/">ImmoDash</Link><span>/</span><Link href="/cities">Cities</Link><span>/</span><span>{snap.city_en}</span>
             <span style={{ marginLeft: "auto" }}><CitySwitcher cities={cities} current={slug} /></span>
           </div>
-          <div className="read" style={{ marginTop: 18 }}>
-            <div className="kicker">{snap.land_name} · data to {monthLong(snap.latest_month)}</div>
-            <h1>Renting in {snap.city_en}</h1>
-            <p className="dek">
-              A typical new lease costs <b>{eur(snap.median_rent_sqm)}</b> per m², {rank === 1 ? "the highest" : rank === cities.length ? "the lowest" : `the ${ordinal(rank)} highest`} of
-              the {cities.length} cities we track. That is {yoy >= 0 ? "up" : "down"} {pct(Math.abs(yoy), 1)} on a year ago
-              {tense && <>, in a market that is <b>{tense}</b></>}.
-            </p>
-          </div>
-          <div className="stats reveal" style={{ marginTop: 28 }}>
-            <Stat label="60 m² flat, cold" value={num(Math.round(flat / 10) * 10)} unit="€/month"
-              say={<>Half of listings sit between {eur(snap.p25_rent_sqm, 2)} and {eur(snap.p75_rent_sqm, 2)} per m².</>} />
-            <Stat label="5-year change" value={pct(snap.index_5y_pct, 0, true)}
-              say={<>For comparison, {pct(yoy, 1, true)} over the last 12 months.</>} />
-            <Stat label="Rent burden" value={num(snap.asking_rent_burden_pct, 1)} unit="%"
-              say={<>of what two average residents here earn after tax ({snap.income_year}).</>} />
-            <Stat label="Next 12 months" value={pct(f12?.change_p50_pct, 1, true)}
-              say={f12 ? <>Most likely {eur(f12.p50_rent_sqm)} per m², range {num(f12.p10_rent_sqm, 2)} to {num(f12.p90_rent_sqm, 2)} €.</> : "No forecast available."} />
+          <div className="hero-grid">
+            <div>
+              <h1 className="enter">Renting in {snap.city_en}</h1>
+              <p className="lead enter">
+                A new lease costs <b style={{ color: "var(--ink)" }}>{eur(snap.median_rent_sqm)}</b> per m², {rank === 1 ? "the highest" : rank === cities.length ? "the lowest" : `the ${ordinal(rank)} highest`} of
+                {" "}{cities.length} cities, {yoy >= 0 ? "up" : "down"} {pct(Math.abs(yoy), 1)} on a year ago{tense && <> in a <b style={{ color: "var(--ink)" }}>{tense}</b> market</>}.
+              </p>
+              <p className="meta enter" style={{ marginTop: 14 }}>{snap.land_name && snap.land_name !== snap.city && snap.land_name !== snap.city_en ? `${snap.land_name}. ` : ""}Data up to {monthLong(snap.latest_month)}.</p>
+            </div>
+            <div className="panel enter" style={{ padding: "4px 24px" }}>
+              <div className="stats" style={{ gridTemplateColumns: "1fr 1fr" }}>
+                <Stat label="60 m² flat, cold" value={num(Math.round(flat / 10) * 10)} unit="€/mo"
+                  say={<>Half of listings: {num(snap.p25_rent_sqm, 2)} to {num(snap.p75_rent_sqm, 2)} € per m².</>} />
+                <Stat label="Five years" value={pct(snap.index_5y_pct, 0, true)} say={<>{pct(yoy, 1, true)} in the last 12 months.</>} />
+                <Stat label="Rent burden" value={num(snap.asking_rent_burden_pct, 1)} unit="%"
+                  say={<>of two average residents&apos; net income ({snap.income_year}).</>} />
+                <Stat label="Next 12 months" value={pct(f12?.change_p50_pct, 1, true)}
+                  say={f12 ? <>Likely {num(f12.p10_rent_sqm, 2)} to {num(f12.p90_rent_sqm, 2)} € per m².</> : "No forecast available."} />
+              </div>
+            </div>
           </div>
         </div>
       </header>
 
-      <section className="section">
-        <div className="wrap split">
-          <div className="read reveal" style={{ margin: 0 }}>
-            <div className="chapter-num">The market in brief</div>
+      <section className="section tight">
+        <div className="wrap split wl">
+          <div className="reveal">
+            <h2 style={{ marginBottom: 18 }}>The market in brief</h2>
             <div className="summary-lede">
               {summary.text.split("\n\n").map((p, i) => <p key={i}>{p}</p>)}
             </div>
             <div className="ai-note">
-              <span className="badge">{llm ? "AI-written" : "Generated from data"}</span>
+              <span className="badge">{llm ? "AI-written" : "From the data"}</span>
               {llm ? <span>Written by an AI model ({summary.generated_by.split(":").slice(1).join(":")}). Every number was checked against the data before publishing.</span>
                 : <span>Written from a template using the latest figures.</span>}
             </div>
-            <details className="howto" style={{ marginTop: 8 }}>
+            <details className="howto" style={{ marginTop: 6 }}>
               <summary>The facts this summary was allowed to use</summary>
               <div className="body"><pre>{JSON.stringify(summary.facts, null, 2)}</pre></div>
             </details>
           </div>
-          <div className="card reveal">
+          <div className="panel reveal">
             <h3 style={{ marginBottom: 4 }}>How {snap.city_en} compares</h3>
-            <p className="note" style={{ marginBottom: 16 }}>Each dot is one of the {cities.length} cities; the blue one is {snap.city_en}. Hover a grey dot to see which city it is.</p>
+            <p className="note" style={{ marginBottom: 18 }}>Each dot is one of the {cities.length} cities; blue is {snap.city_en}. Hover a grey dot to see which.</p>
             <RankStrips strips={strips} city={city} />
           </div>
         </div>
       </section>
 
-      <section className="chapter">
+      <section className="section">
         <div className="wrap">
-          <div className="read reveal">
-            <div className="chapter-num">Price and outlook</div>
-            <h2>Where rents in {snap.city_en} came from, and where they are heading</h2>
-            <div className="prose">
-              <p>The solid line is the median <Term k="asking-rent" /> each month; the dashed line and shaded band are the model&apos;s
-                forecast for the next 3, 6 and 12 months. {f12 && <>In a year, a 60 m² flat would most likely be listed at about{" "}
-                <strong>{num(Math.round((f12.p50_rent_sqm * 60) / 10) * 10)} €</strong> a month, compared with {num(Math.round(flat / 10) * 10)} € today.</>}
-                {" "}Use the menu to put another city next to it.</p>
-            </div>
-          </div>
+          <Head title={`Where rents in ${snap.city_en} are heading`}>
+            The solid line is the median <Term k="asking-rent" /> each month; the dashed line and band are the model&apos;s forecast.
+            {f12 && <> In a year, a 60 m² flat would most likely be listed at about <b style={{ color: "var(--ink)" }}>{num(Math.round((f12.p50_rent_sqm * 60) / 10) * 10)} €</b> a month,
+              against {num(Math.round(flat / 10) * 10)} € today.</>}
+          </Head>
           <Figure title={`Median asking rent in ${snap.city_en}, € per m²`}
-            sub="Monthly, with the 12-month forecast and its 80% range."
+            sub="Monthly, with the 3, 6 and 12-month forecast and its 80% range. Use the menu to compare another city."
             source="GREIX Mietpreisindex; ImmoDash forecast model."
             howto={<>
               <p>The band widens further into the future because uncertainty grows with time. In back-tests, about 8 out of 10 real outcomes fell
@@ -152,34 +149,33 @@ export default async function CityPage({ params }: Props) {
               others={alpha.filter((c) => c.city !== city).map((c) => ({ city: c.city, city_en: c.city_en }))} />
           </Figure>
           {anomalies.length > 0 && (
-            <div className="read reveal">
-              <p className="figure-title" style={{ marginTop: 18 }}>Unusual months, in plain words</p>
-              <ul className="list" style={{ marginTop: 8 }}>
-                {anomalies.slice(0, 4).map((a) => (
-                  <li key={a.period_date}>
-                    In {monthLong(a.period_date)} asking rents {a.direction === "spike" ? "jumped" : "fell"} {pct(Math.abs(a.mom_pct), 1)} in a single month,
-                    while the typical city moved {pct(a.market_mom_pct, 1, true)}.
-                  </li>
-                ))}
-              </ul>
-              <p className="note" style={{ marginTop: 8 }}>Single-month jumps like these often reflect a batch of new-build or furnished listings rather than a real change in price.</p>
+            <div className="split even reveal" style={{ marginTop: 36 }}>
+              <div>
+                <h3 style={{ marginBottom: 12 }}>Unusual months, in plain words</h3>
+                <ul className="list">
+                  {anomalies.slice(0, 4).map((a) => (
+                    <li key={a.period_date}>
+                      In {monthLong(a.period_date)} asking rents {a.direction === "spike" ? "jumped" : "fell"} {pct(Math.abs(a.mom_pct), 1)} in a single month,
+                      while the typical city moved {pct(a.market_mom_pct, 1, true)}.
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <p className="prose" style={{ margin: 0, alignSelf: "end" }}>Single-month jumps like these often reflect a batch of new-build or furnished
+                listings rather than a real change in price. The longer trend is the better guide.</p>
             </div>
           )}
         </div>
       </section>
 
-      <section className="chapter">
+      <section className="section band" style={{ paddingBottom: 72 }}>
         <div className="wrap">
-          <div className="read reveal">
-            <div className="chapter-num">Neighbourhoods</div>
-            <h2>Not every street costs the same</h2>
-            <div className="prose">
-              <p>The 2022 census recorded rents on existing leases down to squares of 100 by 100 metres. The map below colours each square by its
-                average rent: darker blue is more expensive. It shows existing contracts, which are cheaper than today&apos;s asking rents, but
-                the pattern of dear and cheap areas is the same.{notExact && " For this city the map covers the whole surrounding district."}</p>
-            </div>
-          </div>
-          <div className={bez.length ? "split" : ""}>
+          <Head title="Not every street costs the same">
+            The 2022 census recorded rents on existing leases for every 100 by 100 metre square. Darker blue is more expensive. These are
+            existing contracts, cheaper than today&apos;s asking rents, but the pattern of dear and cheap areas is the same.
+            {notExact && " For this city the map covers the whole surrounding district."}
+          </Head>
+          <div className={bez.length ? "split wl" : ""}>
             <Figure title={`Rent per 100 m square, ${snap.city_en}`} sub="Average net cold rent on existing contracts, May 2022. Hover for values."
               source="Zensus 2022 grid data (100 m); squares with too few flats are left out."
               howto={<p>The colour scale runs from the cheapest 2% to the most expensive 2% of squares, so a few extreme squares don&apos;t wash out the
@@ -196,21 +192,19 @@ export default async function CityPage({ params }: Props) {
         </div>
       </section>
 
-      <section className="chapter">
+      <section className="section">
         <div className="wrap split">
-          <div className="reveal">
-            <div className="chapter-num">Competition</div>
+          <div className="sticky reveal">
             <h2>How fast flats are let</h2>
-            <div className="prose">
+            <div className="prose" style={{ marginTop: 16 }}>
               {lastP?.time_on_market_days_4q != null && (
-                <p>A listing in {snap.city_en} stays online for about <strong>{num(lastP.time_on_market_days_4q)} days</strong>, and{" "}
-                  {lastP.share_closed_within_week_4q != null && <>{inN(lastP.share_closed_within_week_4q)} flats are gone within a week</>}.
-                  {" "}Fewer <Term k="days-on-market" /> means more people competing for each flat: have your documents (SCHUFA, payslips) ready
-                  before you view.</p>
+                <p>A listing in {snap.city_en} stays online for about <strong>{num(lastP.time_on_market_days_4q)} days</strong>
+                  {lastP.share_closed_within_week_4q != null && <>, and {inN(lastP.share_closed_within_week_4q)} flats are gone within a week</>}.
+                  {" "}Fewer <Term k="days-on-market" /> means more competition: have your documents (SCHUFA, payslips) ready before you view.</p>
               )}
               {kreis && <p>The census found <strong>{pct(kreis.market_active_vacancy_pct, 1)}</strong> of flats empty and available
-                (<Term k="vacancy" />), while the population grew {pct(kreis.population_growth_5y_pct, 1, true)} in five years.
-                That makes the market <strong>{kreis.market_balance}</strong> on our <Term k="supply-demand" />.</p>}
+                (<Term k="vacancy" />), while the population grew {pct(kreis.population_growth_5y_pct, 1, true)} in five years. That makes the
+                market <strong>{kreis.market_balance}</strong> on our <Term k="supply-demand" />.</p>}
             </div>
           </div>
           <Figure title="Days a listing stays online" sub="Rolling average over four quarters. Lower means a faster, tighter market."
@@ -220,16 +214,11 @@ export default async function CityPage({ params }: Props) {
         </div>
       </section>
 
-      <section className="chapter">
+      <section className="section">
         <div className="wrap">
-          <div className="read reveal">
-            <div className="chapter-num">Your numbers</div>
-            <h2>What would a flat in {snap.city_en} cost you?</h2>
-          </div>
-          <div className="reveal" style={{ marginTop: 16 }}>
-            <RentCheck cities={rentCheckCities()} initialCity={city} compact />
-          </div>
-          <div className="read">
+          <Head title={`What would a flat in ${snap.city_en} cost you?`} />
+          <div className="reveal"><RentCheck cities={rentCheckCities()} initialCity={city} compact /></div>
+          <div style={{ maxWidth: 720 }}>
             <Takeaway label="Before you sign">
               Asking rents here are {pct(snap.asking_premium_vs_existing_pct, 0)} above what existing tenants paid in 2022. Check the
               Mietspiegel for {snap.city_en} and whether the rent cap (Mietpreisbremse) applies to your flat: it can limit how far a new
@@ -237,13 +226,11 @@ export default async function CityPage({ params }: Props) {
             </Takeaway>
           </div>
           <nav className="pager" aria-label="Other cities">
-            <Link href={`/cities/${prev.slug}`}><span>← Previous</span><b>{prev.city_en}</b></Link>
-            <Link href="/cities" style={{ textAlign: "center" }}><span>All cities</span><b>Overview</b></Link>
-            <Link href={`/cities/${next.slug}`} style={{ textAlign: "right" }}><span>Next →</span><b>{next.city_en}</b></Link>
+            <Link href={`/cities/${prev.slug}`}><span>Previous city</span><b>{prev.city_en}</b></Link>
+            <Link href={`/cities/${next.slug}`} style={{ textAlign: "right" }}><span>Next city</span><b>{next.city_en}</b></Link>
           </nav>
         </div>
       </section>
     </>
   );
 }
-

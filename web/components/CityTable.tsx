@@ -66,7 +66,7 @@ export function CityTable({ rows }: { rows: TableRow[] }) {
                 <td className="num">{pct(r.burden)}</td>
                 <td className="num">{num(r.dom)}</td>
                 <td className="num">{pct(r.f12, 1, true)}</td>
-                <td>{r.balance ? <span className={`pill ${r.balance}`}>{r.balance}</span> : "–"}</td>
+                <td>{r.balance ? <span className={`pill ${r.balance}`}>{r.balance}</span> : "n/a"}</td>
               </tr>
             ))}
             {view.length === 0 && <tr><td colSpan={8} className="muted">No city matches “{q}”.</td></tr>}
