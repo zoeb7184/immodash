@@ -12,3 +12,4 @@ dbt/dbt_packages/
 _to_delete/
 .DS_Store
 reports/*.fragment.html
+dbt/.user.yml

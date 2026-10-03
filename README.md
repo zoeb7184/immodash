@@ -122,7 +122,7 @@ make dashboard   # http://localhost:8050  (second terminal)
 make test        # pytest: parsers, API contracts, ML, dashboard logic
 ```
 
-Set `GROQ_API_KEY` to have the market summary written by an LLM (`llama-3.3-70b-versatile` by
+Set `GROQ_API_KEY` to have the market summary written by an LLM (`openai/gpt-oss-120b` by
 default, `GROQ_MODEL` to change). Every number in the LLM text is matched against the facts it was
 given; if one is not, the draft is discarded and the template summary is shown instead.
 

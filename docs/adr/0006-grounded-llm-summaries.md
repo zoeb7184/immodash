@@ -5,7 +5,7 @@
 ## Decision
 - The API assembles a facts object for each city from the gold and ml layers: level, momentum,
   rank, burden, days on market, vacancy, population growth, forecast range, rate and recent anomalies.
-- With `GROQ_API_KEY` set, Groq (`llama-3.3-70b-versatile`) writes 90–130 words from those facts only.
+- With `GROQ_API_KEY` set, Groq (`openai/gpt-oss-120b`, falling back to `openai/gpt-oss-20b`) writes 90–130 words from those facts only.
 - **Grounding check**: every number in the generated text must match a fact (±0.05 for values under
   100, ±0.6 % above). Any unmatched number causes the draft to be rejected, and a deterministic
   template summary is served instead. The response states which path produced it and lists any

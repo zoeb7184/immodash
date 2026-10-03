@@ -19,7 +19,11 @@ from typing import Any
 from . import db
 
 log = logging.getLogger(__name__)
-GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
+# Groq retires models regularly (llama-3.3-70b-versatile was shut down in August 2026). GROQ_MODEL
+# overrides the choice; otherwise the first model in GROQ_MODELS that the account can use is taken.
+GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
+GROQ_MODELS = [m for m in dict.fromkeys([GROQ_MODEL, "openai/gpt-oss-120b", "openai/gpt-oss-20b"]) if m]
+_dead_models: set[str] = set()
 
 SYSTEM_PROMPT = (
     "You are a German housing-market analyst. Write a concise market summary (90-130 words, 3 short "
@@ -138,27 +142,46 @@ def ungrounded_numbers(text: str, facts: dict[str, Any]) -> list[str]:
     return bad
 
 
-def llm_summary(facts: dict[str, Any]) -> str | None:  # pragma: no cover - network dependent
+def _model_kwargs(model: str) -> dict[str, Any]:
+    if model.startswith("openai/gpt-oss"):
+        # reasoning models: keep the reasoning short and out of the returned text
+        return {"max_completion_tokens": 1500, "extra_body": {"reasoning_effort": "low", "include_reasoning": False}}
+    return {"max_tokens": 400}
+
+
+def llm_summary(facts: dict[str, Any]) -> tuple[str, str] | None:  # pragma: no cover - network dependent
+    """Return (text, model) from the first usable Groq model, or None."""
     key = os.getenv("GROQ_API_KEY")
     if not key:
         return None
     try:
         from groq import Groq
-
-        client = Groq(api_key=key, timeout=20)
-        resp = client.chat.completions.create(
-            model=GROQ_MODEL,
-            temperature=0.2,
-            max_tokens=400,
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": "Facts (JSON):\n" + json.dumps(facts, ensure_ascii=False)},
-            ],
-        )
-        return resp.choices[0].message.content.strip()
-    except Exception as exc:  # noqa: BLE001
-        log.warning("LLM summary failed: %s", exc)
+    except ImportError:
+        log.warning("LLM summary failed: groq package not installed")
         return None
+    # generous retries: the SDK backs off on 429 using the retry-after header (free-tier token limits)
+    client = Groq(api_key=key, timeout=60, max_retries=8)
+    messages = [
+        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "user", "content": "Facts (JSON):\n" + json.dumps(facts, ensure_ascii=False)},
+    ]
+    for model in GROQ_MODELS:
+        if model in _dead_models:
+            continue
+        try:
+            resp = client.chat.completions.create(model=model, temperature=0.2, messages=messages,
+                                                  **_model_kwargs(model))
+            text = (resp.choices[0].message.content or "").strip()
+            return (text, model) if text else None
+        except Exception as exc:  # noqa: BLE001
+            if "model_not_found" in str(exc) or "decommissioned" in str(exc):
+                log.warning("Groq model %s unavailable, trying the next one", model)
+                _dead_models.add(model)
+                continue
+            log.warning("LLM summary failed: %s", exc)
+            return None
+    log.warning("LLM summary failed: none of %s is available", GROQ_MODELS)
+    return None
 
 
 _cache: dict[tuple[str, date], dict[str, Any]] = {}
@@ -173,13 +196,14 @@ def summarise(city: str, use_llm: bool = True) -> dict[str, Any] | None:
         return None
     text, source, rejected = None, "template", []
     if use_llm:
-        draft = llm_summary(facts)
-        if draft:
+        out = llm_summary(facts)
+        if out:
+            draft, model = out
             rejected = ungrounded_numbers(draft, facts)
             if rejected:
                 log.warning("LLM summary for %s rejected, ungrounded numbers: %s", city, rejected)
             else:
-                text, source = draft, f"groq:{GROQ_MODEL}"
+                text, source = draft, f"groq:{model}"
     result = {
         "city": city,
         "text": text or template_summary(facts),
