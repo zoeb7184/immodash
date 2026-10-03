@@ -1,5 +1,6 @@
 "use client";
 
+import { X } from "@phosphor-icons/react";
 import { useMemo, useState } from "react";
 import { CartesianGrid, Line, LineChart, ReferenceArea, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { assignSlots, MAX_SERIES, SERIES } from "@/lib/colors";
@@ -81,7 +82,7 @@ export function TrendStory({ monthly, cities, rateBand, initial }: {
       <div className="chips" style={{ marginBottom: 10 }} role="group" aria-label="Highlighted cities">
         {selected.map((c) => (
           <button key={c} className="chip" aria-pressed onClick={() => toggle(c)} aria-label={`Remove ${names[c]}`}>
-            <span className="dot" style={{ background: SERIES[slots[c]] }} />{names[c]}<span className="x" aria-hidden>×</span>
+            <span className="dot" style={{ background: SERIES[slots[c]] }} />{names[c]}<X size={12} weight="bold" aria-hidden style={{ color: "var(--muted)" }} />
           </button>
         ))}
         {selected.length < MAX_SERIES && (

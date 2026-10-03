@@ -1,5 +1,6 @@
 "use client";
 
+import { CaretDown, CaretUp } from "@phosphor-icons/react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { eur, num, pct } from "@/lib/format";
@@ -34,7 +35,7 @@ export function CityTable({ rows }: { rows: TableRow[] }) {
   const th = (key: Key, label: string, hint?: string, cls = "num") => (
     <th className={cls} aria-sort={sort.key === key ? (sort.desc ? "descending" : "ascending") : "none"} title={hint}>
       <button onClick={() => setSort((s) => ({ key, desc: s.key === key ? !s.desc : key !== "city_en" }))}>
-        {label} {sort.key === key ? (sort.desc ? "↓" : "↑") : ""}
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 3 }}>{label}{sort.key === key && (sort.desc ? <CaretDown size={11} weight="bold" aria-hidden /> : <CaretUp size={11} weight="bold" aria-hidden />)}</span>
       </button>
     </th>
   );

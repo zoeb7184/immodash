@@ -11,9 +11,10 @@ const RAMP = ["--q1", "--q2", "--q3", "--q4", "--q5"];
 
 /** Hero visual: every district coloured by estimated asking rent (real data, not decoration). */
 export function HeroMap({ rents, names }: { rents: Record<string, number>; names: Record<string, string> }) {
-  const paths = useKreisPaths();
+  const paths = useKreisPaths(undefined, true);
   const t = useTokens([...RAMP, "--bg", "--surface-2"]);
   const [hover, setHover] = useState<{ ags: string; x: number; y: number } | null>(null);
+  const rank = useMemo(() => Object.fromEntries(Object.entries(rents).sort((a, b) => a[1] - b[1]).map(([a], i) => [a, i])), [rents]);
   const { color, lo, hi } = useMemo(() => {
     const v = Object.values(rents).sort((a, b) => a - b);
     const lo = v[Math.floor(v.length * 0.02)], hi = v[Math.floor(v.length * 0.98)];
@@ -25,10 +26,11 @@ export function HeroMap({ rents, names }: { rents: Record<string, number>; names
     <div className="hero-visual">
       <div className="mapwrap" onMouseLeave={() => setHover(null)} style={{ maxWidth: 440, marginInline: "auto" }}>
         {paths && t["--q1"] ? (
-          <svg viewBox={`0 0 ${MAP_W} ${MAP_H}`} style={{ width: "100%", display: "block" }} role="img"
+          <svg className="hero-map" viewBox={`0 0 ${MAP_W} ${MAP_H}`} style={{ width: "100%", display: "block" }} role="img"
             aria-label="Map of Germany's 400 districts coloured by estimated asking rent">
             {paths.map((p) => (
               <path key={p.ags + p.d.length} className="k" d={p.d} fill={color(p.ags)} stroke={t["--bg"]} strokeWidth={0.6}
+                style={{ ["--rank" as string]: rank[p.ags] ?? 0 }}
                 onMouseMove={(e) => {
                   const r = (e.currentTarget.ownerSVGElement as SVGSVGElement).getBoundingClientRect();
                   setHover({ ags: p.ags, x: e.clientX - r.left, y: e.clientY - r.top });

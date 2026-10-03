@@ -51,12 +51,12 @@ export function Head({ title, children }: { title: ReactNode; children?: ReactNo
   );
 }
 
+/** A key figure set as a sentence row: the number at reading scale, then a bold lead-in and the explanation. */
 export function Stat({ label, value, unit, say }: { label: string; value: ReactNode; unit?: string; say?: ReactNode }) {
   return (
-    <div className="stat">
-      <span className="label">{label}</span>
+    <li className="stat">
       <span className="value">{value}{unit && <span className="unit">{unit}</span>}</span>
-      {say && <span className="say">{say}</span>}
-    </div>
+      <span className="txt"><b>{label}.</b>{say && <> {say}</>}</span>
+    </li>
   );
 }

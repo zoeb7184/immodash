@@ -90,16 +90,16 @@ export default async function CityPage({ params }: Props) {
               </p>
               <p className="meta enter" style={{ marginTop: 14 }}>{snap.land_name && snap.land_name !== snap.city && snap.land_name !== snap.city_en ? `${snap.land_name}. ` : ""}Data up to {monthLong(snap.latest_month)}.</p>
             </div>
-            <div className="panel enter" style={{ padding: "4px 24px" }}>
-              <div className="stats" style={{ gridTemplateColumns: "1fr 1fr" }}>
-                <Stat label="60 m² flat, cold" value={num(Math.round(flat / 10) * 10)} unit="€/mo"
+            <div className="panel enter" style={{ padding: "6px 24px" }}>
+              <ul className="stats one">
+                <Stat label="A 60 m² flat, cold" value={num(Math.round(flat / 10) * 10)} unit="€/mo"
                   say={<>Half of listings: {num(snap.p25_rent_sqm, 2)} to {num(snap.p75_rent_sqm, 2)} € per m².</>} />
-                <Stat label="Five years" value={pct(snap.index_5y_pct, 0, true)} say={<>{pct(yoy, 1, true)} in the last 12 months.</>} />
+                <Stat label="Change over five years" value={pct(snap.index_5y_pct, 0, true)} say={<>{pct(yoy, 1, true)} in the last 12 months.</>} />
                 <Stat label="Rent burden" value={num(snap.asking_rent_burden_pct, 1)} unit="%"
-                  say={<>of two average residents&apos; net income ({snap.income_year}).</>} />
-                <Stat label="Next 12 months" value={pct(f12?.change_p50_pct, 1, true)}
+                  say={<>Share of what two average residents earn after tax ({snap.income_year}).</>} />
+                <Stat label="Forecast, next 12 months" value={pct(f12?.change_p50_pct, 1, true)}
                   say={f12 ? <>Likely {num(f12.p10_rent_sqm, 2)} to {num(f12.p90_rent_sqm, 2)} € per m².</> : "No forecast available."} />
-              </div>
+              </ul>
             </div>
           </div>
         </div>

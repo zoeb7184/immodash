@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowRight } from "@phosphor-icons/react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { scaleLinear } from "d3-scale";
@@ -149,7 +150,7 @@ export function KreisMap({ afford, sd, asking, citySlugs }: {
               {s.s && <p>The market is <b>{s.s.market_balance}</b>: {pct(s.s.market_active_vacancy_pct)} of flats stood empty and available, and the
                 population {s.s.population_growth_5y_pct >= 0 ? "grew" : "shrank"} {pct(Math.abs(s.s.population_growth_5y_pct))} in five years.</p>}
             </div>
-            {citySlugs[sel] && <p style={{ margin: "4px 0 12px" }}><Link className="btn" href={`/cities/${citySlugs[sel]}`}>Full city profile →</Link></p>}
+            {citySlugs[sel] && <p style={{ margin: "4px 0 12px" }}><Link className="btn" href={`/cities/${citySlugs[sel]}`}>Full city profile <ArrowRight size={15} weight="bold" aria-hidden /></Link></p>}
             <p className="figure-title" style={{ fontSize: 14, marginTop: 6 }}>By number of rooms</p>
             <p className="note">Rent per m², 2022 leases vs. estimated new lease today</p>
             <div style={{ height: 200, marginTop: 6 }}>

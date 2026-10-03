@@ -46,14 +46,14 @@ export function SupplyDemandScatter({ data, highlight }: { data: KreisSupplyDema
           <ScatterChart margin={{ top: 16, right: 16, bottom: 30, left: 8 }}>
             <CartesianGrid stroke="var(--grid)" />
             <ReferenceArea x1={0.6} x2={mv} y1={mp} y2={ymax} fill="var(--d-neg2)" fillOpacity={0.05} stroke="none"
-              label={{ value: "Growing and full → tight", position: "insideTopLeft", fontSize: 12, fill: "var(--d-neg2)", fontWeight: 600 }} />
+              label={{ value: "Growing, few empty flats: tight", position: "insideTopLeft", fontSize: 12, fill: "var(--d-neg2)", fontWeight: 600 }} />
             <ReferenceArea x1={mv} x2={11} y1={ymin} y2={mp} fill="var(--d-pos2)" fillOpacity={0.05} stroke="none"
-              label={{ value: "Shrinking and empty → slack", position: "insideBottomRight", fontSize: 12, fill: "var(--d-pos2)", fontWeight: 600 }} />
+              label={{ value: "Shrinking, many empty flats: slack", position: "insideBottomRight", fontSize: 12, fill: "var(--d-pos2)", fontWeight: 600 }} />
             <XAxis type="number" dataKey="market_active_vacancy_pct" scale="log" domain={[0.6, 11]} ticks={[1, 2, 3, 5, 10]}
               tickFormatter={(v) => `${v}%`} stroke="var(--muted)" tick={{ fontSize: 12 }}
-              label={{ value: "Flats empty and available (2022) →", position: "insideBottom", offset: -18, fontSize: 12, fill: "var(--muted)" }} />
+              label={{ value: "Flats empty and available, 2022 (log scale)", position: "insideBottom", offset: -18, fontSize: 12, fill: "var(--muted)" }} />
             <YAxis type="number" dataKey="population_growth_5y_pct" domain={[ymin, ymax]} ticks={Array.from({ length: Math.floor((ymax - ymin) / 2) + 1 }, (_, i) => Math.ceil(ymin / 2) * 2 + 2 * i).filter((v) => v <= ymax)} tickFormatter={(v) => `${v > 0 ? "+" : ""}${v}%`} stroke="var(--muted)" tick={{ fontSize: 12 }}
-              label={{ value: "Population change, 5 years →", angle: -90, position: "insideLeft", fontSize: 12, fill: "var(--muted)", dy: 90 }} />
+              label={{ value: "Population change over 5 years", angle: -90, position: "insideLeft", fontSize: 12, fill: "var(--muted)", dy: 90 }} />
             <ZAxis type="number" dataKey="population" range={[16, 300]} />
             <ReferenceLine x={mv} stroke="var(--muted)" strokeDasharray="3 3" />
             <ReferenceLine y={mp} stroke="var(--muted)" strokeDasharray="3 3" />

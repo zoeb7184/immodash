@@ -3,7 +3,6 @@ import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 import { Nav } from "@/components/Nav";
-import { RevealObserver } from "@/components/Reveal";
 import { data } from "@/lib/data";
 import { monthLong } from "@/lib/format";
 
@@ -48,7 +47,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </p>
           </div>
         </footer>
-        <RevealObserver />
       </body>
     </html>
   );

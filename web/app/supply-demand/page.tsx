@@ -47,13 +47,13 @@ export default function SupplyDemand() {
         </div>
       </header>
       <section className="band" aria-label="Key figures">
-        <div className="wrap">
-          <div className="stats">
+        <div className="wrap" style={{ paddingBlock: "12px 20px" }}>
+          <ul className="stats">
             <Stat label="Tight markets" value={counts.tight} unit="districts" say={<>home to {pct((100 * popTight) / popAll, 0)} of Germany&apos;s population.</>} />
             <Stat label="Balanced" value={counts.balanced} unit="districts" say="Supply and demand roughly match." />
             <Stat label="Slack markets" value={counts.slack} unit="districts" say="Many empty flats, shrinking or flat population." />
             <Stat label="Check against live listings" value={`r = ${r.toFixed(2)}`} say={<>The index {strength} agrees with how fast flats are actually let in 37 cities.</>} />
-          </div>
+          </ul>
         </div>
       </section>
 

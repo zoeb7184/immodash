@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowRight } from "@phosphor-icons/react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { eur, num } from "@/lib/format";
@@ -102,7 +103,7 @@ export function RentCheck({ cities, initialCity = "Berlin", compact = false }: {
               <span key={x.city}>{i > 0 && (i === cheaper.length - 1 ? " and " : ", ")}<button className="term-link" onClick={() => pickCity(x.city)}
                 style={{ all: "unset", cursor: "pointer", borderBottom: "1px solid currentColor" }}>{x.city_en}</button> ({euro0(x.cost)})</span>))}.</>}
           </p>
-          {!compact && <p className="note" style={{ marginTop: 10 }}><Link href={`/cities/${c.slug}`}>Read the full {c.city_en} profile →</Link> · <Link href="/affordability">Search all 400 districts by budget →</Link></p>}
+          {!compact && <p className="note" style={{ marginTop: 10 }}><Link href={`/cities/${c.slug}`}>Read the full {c.city_en} profile <ArrowRight size={13} weight="bold" aria-hidden /></Link> <span aria-hidden style={{ margin: "0 6px" }}>/</span> <Link href="/affordability">Search all 400 districts by budget <ArrowRight size={13} weight="bold" aria-hidden /></Link></p>}
         </div>
       </div>
     </div>

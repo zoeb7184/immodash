@@ -60,7 +60,7 @@ export function PremiumChart({ rows, highlight }: {
               <circle cx={x(r.existing)} cy={y} r={6} fill="var(--s3)" stroke="var(--surface)" strokeWidth={2} />
               <circle cx={x(r.asking)} cy={y} r={6} fill="var(--s2)" stroke="var(--surface)" strokeWidth={2} />
               {hl && !narrow && (
-                <text x={x(r.asking) + 10} y={y + 4} fontSize={12} fill="var(--ink-2)">{eur(r.existing)} → {eur(r.asking)}</text>
+                <text x={x(r.asking) + 10} y={y + 4} fontSize={12} fill="var(--ink-2)">{eur(r.existing)} to {eur(r.asking)}</text>
               )}
               <text x={w - 2} y={y + 4} textAnchor="end" fontSize={13} fontWeight={600} fill="var(--ink)">+{num(r.premium)}%</text>
             </g>

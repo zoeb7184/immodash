@@ -54,7 +54,6 @@ export default function Story() {
       <header className="hero">
         <div className="wrap hero-grid">
           <div>
-            <span className="kicker enter">German rental market, updated weekly</span>
             <h1 className="enter">German city rents rose by {share(h.median5y)} in five years.</h1>
             <p className="lead enter">
               A new lease costs {num(h.medianPremium)}% more per m² than tenants paid in 2022. See what that means for your budget.
@@ -69,8 +68,8 @@ export default function Story() {
       </header>
 
       <section className="band" aria-label="Key figures">
-        <div className="wrap">
-          <div className="stats">
+        <div className="wrap" style={{ paddingTop: 12 }}>
+          <ul className="stats">
             <Stat label="Typical asking rent" value={num(h.medianRent, 2)} unit="€/m²"
               say={<>A 60 m² flat in the median city: about {num(Math.round(flat60 / 10) * 10)} € a month, cold.</>} />
             <Stat label="Cities where rents rose" value={h.upYoy} unit={`of ${h.n}`}
@@ -79,8 +78,8 @@ export default function Story() {
               say={<>Per m², compared with existing leases in the typical city.</>} />
             <Stat label="Mortgage rate" value={num(rate.rate_pct, 2)} unit="%"
               say={jump ? <>Up from {num(jump.before, 2)}% at the start of 2022, so more people keep renting.</> : "Bundesbank, new housing loans."} />
-          </div>
-          <p className="meta" style={{ padding: "0 0 22px" }}>
+          </ul>
+          <p className="meta" style={{ padding: "4px 0 26px", borderTop: "1px solid var(--line)", paddingTop: 14 }}>
             Data up to {monthLong(meta.latest_month)}. Rebuilt automatically every week, last on {meta.generated_at.slice(0, 10)}.
           </p>
         </div>
@@ -110,7 +109,9 @@ export default function Story() {
                 expensive a city was to begin with. <b>€ per m²</b> shows the actual price level.</p>
               <p>Hover over the chart to read exact values for the highlighted cities. Monthly figures can jump when unusually many new-build
                 flats are listed at once; the long-run direction is more reliable than any single month.</p>
-            </>}>
+            </>}
+            numbers={<table><thead><tr><th>City</th><th className="num">Asking rent, {monthLong(lastMonth)}</th><th className="num">Since {monthLong(firstMonth)}</th><th className="num">Last 12 months</th></tr></thead>
+              <tbody>{changeSince.map((x) => { const c = cities.find((k) => k.city === x.city)!; return <tr key={x.city}><td>{x.city_en}</td><td className="num">{eur(c.median_rent_sqm)}</td><td className="num">{pct(x.v, 0, true)}</td><td className="num">{pct(c.index_yoy_pct, 1, true)}</td></tr>; })}</tbody></table>}>
             <TrendStory monthly={monthly} initial={big.slice(0, 4).map((c) => c.city)}
               cities={cities.map((c) => ({ city: c.city, city_en: c.city_en, population: c.population, index_5y_pct: c.index_5y_pct, median: c.median_rent_sqm }))}
               rateBand={jump ? { from: jump.from, to: jump.to, label: `Loan rates ${num(jump.before, 1)}% to ${num(jump.after, 1)}%` } : null} />
