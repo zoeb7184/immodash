@@ -183,7 +183,7 @@ export function Finder() {
               <tbody>
                 {hits.slice(0, 150).map((h) => (
                   <tr key={h.ags} onClick={() => setSel(h.ags)} style={{ cursor: "pointer", background: sel === h.ags ? "var(--surface-2)" : undefined }}>
-                    <td className="wrap"><b style={{ fontWeight: 600 }}>{h.name.split(",")[0]}</b><br /><span className="muted" style={{ fontSize: 12 }}>{h.land}</span></td>
+                    <td className="cellwrap"><b style={{ fontWeight: 600 }}>{h.name.split(",")[0]}</b><br /><span className="muted" style={{ fontSize: 12 }}>{h.land}</span></td>
                     <td className="num">{eur(Math.round(h.rent / 10) * 10, 0)}</td>
                     <td className="num">{eur(Math.round(h.headroom / 10) * 10, 0)}</td>
                   </tr>

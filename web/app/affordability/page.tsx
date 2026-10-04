@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Finder } from "@/components/Finder";
 import { RankBars } from "@/components/RankBars";
 import { Term } from "@/components/Term";
-import { Figure, Head, Takeaway } from "@/components/ui";
+import { Figure, Head, PageHero, Stat, Takeaway } from "@/components/ui";
 import { data } from "@/lib/data";
 import { eur, median, pct } from "@/lib/format";
 
@@ -19,13 +19,15 @@ export default function Affordability() {
     note: `${eur(k.rent_eur_sqm)}/m² rent, ${eur(k.disposable_income_per_resident_eur, 0)} income per resident` }));
   return (
     <>
-      <header className="hero" style={{ paddingBottom: 24 }}>
-        <div className="wrap">
-          <h1 className="enter">Where can I afford to live?</h1>
-          <p className="lead enter">Set a budget and a flat size. The map shows every <Term k="kreis">district</Term> where a flat like that is
-            likely to be advertised within it today.</p>
-        </div>
-      </header>
+      <PageHero title="Where can I afford to live?"
+        lead={<>Set a budget and a flat size. The map shows every <Term k="kreis">district</Term> where a flat like that is
+          likely to be advertised within it today.</>}
+        facts={<>
+          <Stat label="Typical district" value={pct(med, 1)} say={<>Share of two residents&apos; net income that rent for 60 m² takes, at 2022 census rents.</>} />
+          <Stat label={`Least affordable: ${worst[0].kreis_name.split(",")[0]}`} value={pct(worst[0].rent_burden_pct, 1)} say="Rent takes the largest share of local income here." />
+          <Stat label={`Most affordable: ${best[0].kreis_name.split(",")[0]}`} value={pct(best[0].rent_burden_pct, 1)} say="Rent takes the smallest share of local income here." />
+          <Stat label="Typical income" value={eur(median(aff.map((a) => a.disposable_income_per_resident_eur)), 0)} unit="a year" say="Net income per resident across the 400 districts." />
+        </>} />
       <section className="section tight" style={{ paddingTop: 0 }}>
         <div className="wrap">
           <Finder />

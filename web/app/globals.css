@@ -126,6 +126,21 @@ h3 { font-weight: 600; font-size: clamp(1.125rem, 1rem + 0.3vw, 1.375rem); line-
 /* section heads stay stacked: headline, then text (no split headers) */
 .head { max-width: 46em; margin-bottom: clamp(24px, 2.4vw, 48px); }
 .head .lead { margin-top: 12px; }
+@media (min-width: 1101px) {
+  .head.has-lead { max-width: none; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: clamp(40px, 4.5vw, 112px); align-items: end; }
+  .head.has-lead h2 { max-width: 16em; }
+  .head.has-lead .lead { margin-top: 0; max-width: 62ch; }
+}
+.page-hero { padding-bottom: clamp(24px, 2.5vw, 48px); }
+.page-hero-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; }
+.hero-facts .stats.one { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(20px, 2.5vw, 40px); }
+.hero-facts .stats.one .stat:nth-child(2) { border-top: 0; }
+.hero-facts .stat { grid-template-columns: minmax(0, 1fr); gap: 2px; padding: 14px 0; align-content: start; }
+.hero-facts .stat .value { font-size: clamp(22px, 1rem + 0.6vw, 30px); }
+.hero-facts .stat .txt { font-size: 14px; line-height: 1.5; }
+@media (min-width: 1101px) {
+  .page-hero-grid { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); column-gap: clamp(48px, 6vw, 120px); align-items: end; }
+}
 
 /* text | chart splits (text column sticks while the chart scrolls) */
 .split { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; align-items: start; }
@@ -270,7 +285,7 @@ th button:focus-visible { outline: 2px solid var(--accent); }
 td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 tbody tr { transition: background 0.15s; }
 tbody tr:hover { background: var(--surface-2); }
-td.wrap { white-space: normal; }
+td.cellwrap { white-space: normal; }
 .up { color: var(--bad); } .down { color: var(--good); }
 .pill { font: 600 12px var(--sans); padding: 3px 10px; border-radius: var(--r-pill); text-transform: capitalize; white-space: nowrap; }
 .pill.tight { background: color-mix(in srgb, var(--d-neg2) 14%, transparent); color: var(--d-neg2); }

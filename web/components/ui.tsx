@@ -41,10 +41,11 @@ export function Takeaway({ children, label = "What this means" }: { children: Re
   );
 }
 
-/** Stacked section head: headline, then a short lead. Never side by side. */
+/** Section head: headline, then a short lead. Stacked on small screens; on wide screens the lead sits beside the
+ *  headline so the line is used instead of leaving the right half of the page empty. */
 export function Head({ title, children }: { title: ReactNode; children?: ReactNode }) {
   return (
-    <div className="head reveal">
+    <div className={`head reveal${children ? " has-lead" : ""}`}>
       <h2>{title}</h2>
       {children && <div className="lead">{children}</div>}
     </div>
@@ -58,5 +59,20 @@ export function Stat({ label, value, unit, say }: { label: string; value: ReactN
       <span className="value">{value}{unit && <span className="unit">{unit}</span>}</span>
       <span className="txt"><b>{label}.</b>{say && <> {say}</>}</span>
     </li>
+  );
+}
+
+/** Inner-page hero: title and lead on the left, the page's key facts on the right (stacked below on small screens). */
+export function PageHero({ title, lead, facts, label = "Key figures" }: { title: ReactNode; lead: ReactNode; facts?: ReactNode; label?: string }) {
+  return (
+    <header className="hero page-hero">
+      <div className={`wrap${facts ? " page-hero-grid" : ""}`}>
+        <div>
+          <h1 className="enter">{title}</h1>
+          <p className="lead enter">{lead}</p>
+        </div>
+        {facts && <aside className="hero-facts enter" aria-label={label}><ul className="stats one">{facts}</ul></aside>}
+      </div>
+    </header>
   );
 }

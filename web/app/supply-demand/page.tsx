@@ -4,7 +4,7 @@ import Link from "next/link";
 import { RankBars } from "@/components/RankBars";
 import { SupplyDemandScatter } from "@/components/SupplyDemandCharts";
 import { Term } from "@/components/Term";
-import { Figure, Head, Stat, Takeaway } from "@/components/ui";
+import { Figure, Head, PageHero, Stat, Takeaway } from "@/components/ui";
 import { data } from "@/lib/data";
 import { num, pct } from "@/lib/format";
 
@@ -41,22 +41,14 @@ export default function SupplyDemand() {
 
   return (
     <>
-      <header className="hero" style={{ paddingBottom: 32 }}>
-        <div className="wrap">
-          <h1 className="enter">Where demand outruns the housing stock</h1>
-          <p className="lead enter">Where more people want to live than there are flats, rents come under pressure. We measure both sides in every district.</p>
-        </div>
-      </header>
-      <section className="band" aria-label="Key figures">
-        <div className="wrap" style={{ paddingBlock: "12px 20px" }}>
-          <ul className="stats">
-            <Stat label="Tight markets" value={counts.tight} unit="districts" say={<>home to {pct((100 * popTight) / popAll, 0)} of Germany&apos;s population.</>} />
-            <Stat label="Balanced" value={counts.balanced} unit="districts" say="Supply and demand roughly match." />
-            <Stat label="Slack markets" value={counts.slack} unit="districts" say="Many empty flats, shrinking or flat population." />
-            <Stat label="Check against live listings" value={`r = ${r.toFixed(2)}`} say={<>The index {strength} agrees with how fast flats are actually let in 37 cities.</>} />
-          </ul>
-        </div>
-      </section>
+      <PageHero title="Where demand outruns the housing stock"
+        lead="Where more people want to live than there are flats, rents come under pressure. We measure both sides in every district."
+        facts={<>
+          <Stat label="Tight markets" value={counts.tight} unit="districts" say={<>Home to {pct((100 * popTight) / popAll, 0)} of Germany&apos;s population.</>} />
+          <Stat label="Balanced" value={counts.balanced} unit="districts" say="Supply and demand roughly match." />
+          <Stat label="Slack markets" value={counts.slack} unit="districts" say="Many empty flats, shrinking or flat population." />
+          <Stat label="Check against live listings" value={`r = ${r.toFixed(2)}`} say={<>The index {strength} agrees with how fast flats are actually let in 37 cities.</>} />
+        </>} />
 
       <section className="section">
         <div className="wrap">

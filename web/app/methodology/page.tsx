@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { BacktestChart } from "@/components/BacktestChart";
-import { Figure, Head, Takeaway } from "@/components/ui";
+import { Figure, Head, PageHero, Stat, Takeaway } from "@/components/ui";
 import { Cite } from "@/components/Cite";
 import { data } from "@/lib/data";
 import { REFERENCES } from "@/lib/references";
@@ -28,6 +28,8 @@ const METRICS: { k: string; plain: string; formula: string; refs?: string[] }[] 
   { k: "Unusual month", plain: "A month where one city moved far more than the others, compared with its own last two years.", formula: "City change minus all-city median change; robust z vs. previous 24 months; |z| ≥ 3.5", refs: ["iglewicz1993"] },
 ];
 
+const fmtDay = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+
 const MODEL_NAMES: Record<string, string> = { lightgbm: "ImmoDash model", drift_last_12m: "Trend continues", naive_no_change: "No change" };
 
 export default function Methodology() {
@@ -37,15 +39,15 @@ export default function Methodology() {
   const better = lg12 && nv12 ? Math.round((1 - lg12.mape_pct / nv12.mape_pct) * 100) : null;
   return (
     <>
-      <header className="hero" style={{ paddingBottom: 24 }}>
-        <div className="wrap">
-          <h1 className="enter">How ImmoDash works</h1>
-          <p className="lead enter">Ten public datasets become one tested picture of the German rental market, rebuilt automatically every week.</p>
-          <p className="meta enter" style={{ marginTop: 14 }}>
-            Last run {meta.generated_at.slice(0, 10)}, {meta.files} data files{meta.summaries_by_llm > 0 && <>, {meta.summaries_by_llm} AI-written city summaries</>}.
-          </p>
-        </div>
-      </header>
+      <PageHero title="How ImmoDash works"
+        lead="Ten public datasets become one tested picture of the German rental market, rebuilt automatically every week."
+        label="The pipeline at a glance"
+        facts={<>
+          <Stat label="Last automatic run" value={fmtDay(meta.generated_at)} say="Rebuilt every Monday by GitHub Actions." />
+          <Stat label="Data files" value={meta.files} say={<>Published by one tested pipeline{meta.summaries_by_llm > 0 && <>, with {meta.summaries_by_llm} AI-written city summaries</>}.</>} />
+          <Stat label="Checks" value={63} unit="data tests" say="Run before anything is published." />
+          <Stat label="References" value={REFERENCES.length} unit="publications" say={<>Back the explanations. <a href="#references">See the list</a>.</>} />
+        </>} />
 
       <section className="section tight">
         <div className="wrap split">
@@ -71,12 +73,7 @@ export default function Methodology() {
             We repeatedly cut the data at an earlier month, trained only on what was known then, and compared the forecast with what happened.
             Twelve starting points, all 37 cities.<Cite id="hyndman2021" />
           </Head>
-          <div className="split wl">
-            <Figure title="Average forecast error, lower is better" sub="Mean absolute percentage error, out of sample."
-              source="ImmoDash back-test." numbers={<table><thead><tr><th>Horizon</th><th>Model</th><th className="num">Error</th><th className="num">80% range hit rate</th></tr></thead>
-                <tbody>{bt.map((b) => <tr key={b.horizon_months + b.model}><td>{b.horizon_months} months</td><td>{MODEL_NAMES[b.model] ?? b.model}</td><td className="num">{pct(b.mape_pct, 2)}</td><td className="num">{b.coverage_80_pct != null ? pct(b.coverage_80_pct, 0) : "n/a"}</td></tr>)}</tbody></table>}>
-              <BacktestChart data={bt} />
-            </Figure>
+          <div className="split">
             <div className="reveal">
               {lg12 && nv12 && tr12 && <div className="prose"><p>Over 12 months the model was off by <strong>{pct(lg12.mape_pct, 2)}</strong> on average. Assuming
                 rents stay the same was off by {pct(nv12.mape_pct, 2)}, and extending last year&apos;s trend by {pct(tr12.mape_pct, 2)}.
@@ -87,6 +84,11 @@ export default function Methodology() {
                 new laws or a sudden building boom.
               </Takeaway>
             </div>
+            <Figure title="Average forecast error, lower is better" sub="Mean absolute percentage error, out of sample."
+              source="ImmoDash back-test." numbers={<table><thead><tr><th>Horizon</th><th>Model</th><th className="num">Error</th><th className="num">80% range hit rate</th></tr></thead>
+                <tbody>{bt.map((b) => <tr key={b.horizon_months + b.model}><td>{b.horizon_months} months</td><td>{MODEL_NAMES[b.model] ?? b.model}</td><td className="num">{pct(b.mape_pct, 2)}</td><td className="num">{b.coverage_80_pct != null ? pct(b.coverage_80_pct, 0) : "n/a"}</td></tr>)}</tbody></table>}>
+              <BacktestChart data={bt} />
+            </Figure>
           </div>
         </div>
       </section>
@@ -150,7 +152,7 @@ export default function Methodology() {
             <div className="tablewrap" style={{ marginTop: 18 }}>
               <table>
                 <thead><tr><th>Dataset</th><th>Licence</th></tr></thead>
-                <tbody>{sources.map((src) => <tr key={src.key}><td className="wrap">{src.url ? <a href={src.url}>{src.publisher}</a> : src.publisher}</td><td className="wrap">{src.licence}</td></tr>)}</tbody>
+                <tbody>{sources.map((src) => <tr key={src.key}><td className="cellwrap">{src.url ? <a href={src.url}>{src.publisher}</a> : src.publisher}</td><td className="cellwrap">{src.licence}</td></tr>)}</tbody>
               </table>
             </div>
           </div>
