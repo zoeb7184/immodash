@@ -161,8 +161,8 @@ export default async function CityPage({ params }: Props) {
                   ))}
                 </ul>
               </div>
-              <p className="prose" style={{ margin: 0, alignSelf: "end" }}>Single-month jumps like these often reflect a batch of new-build or furnished
-                listings rather than a real change in price. The longer trend is the better guide.</p>
+              <p className="prose" style={{ margin: 0, alignSelf: "end" }}>One month is a small sample, so a flag like this is a prompt to look closer rather than proof of a price change.
+                The longer trend is the better guide.</p>
             </div>
           )}
         </div>

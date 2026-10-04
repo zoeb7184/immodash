@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { eur, num } from "@/lib/format";
 import { useWidth } from "@/lib/useWidth";
+import { Cite } from "@/components/Cite";
 
 export type RCCity = {
   city: string; city_en: string; slug: string; median: number; p25: number | null; p75: number | null;
@@ -17,7 +18,7 @@ const euro0 = (v: number) => `${num(round10(v))} €`;
 function verdict(share: number) {
   if (share <= 0.3) return { cls: "ok", label: "Comfortable", say: "within the common rule of thumb that rent should take no more than 30% of net income" };
   if (share <= 0.4) return { cls: "stretch", label: "A stretch", say: "above the 30% rule of thumb; doable, but it leaves less room for everything else" };
-  return { cls: "tough", label: "Tough", say: "well above the 30% rule of thumb, and many German landlords look for a net income of about three times the cold rent" };
+  return { cls: "tough", label: "Tough", say: "well above the 30% rule of thumb, a limit many landlords also use when choosing tenants" };
 }
 
 /** Typical household: two residents' disposable income, per month. */
@@ -85,7 +86,7 @@ export function RentCheck({ cities, initialCity = "Berlin", compact = false }: {
           </div>
           <div className="meter-scale"><span>0%</span><span>30%</span><span>40%</span><span>100%</span></div>
           <p className="rc-say">
-            That is {v.say}.
+            That is {v.say}.<Cite id="lebuhn2017" />
             {c.f12 != null && <> If the trend holds, the same flat would be listed at about <b>{euro0(c.f12 * size)}</b> a year from now
               {c.f12lo != null && c.f12hi != null && <> (likely between {euro0(c.f12lo * size)} and {euro0(c.f12hi * size)})</>}.</>}
           </p>

@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { BacktestChart } from "@/components/BacktestChart";
 import { Figure, Head, Takeaway } from "@/components/ui";
+import { Cite } from "@/components/Cite";
 import { data } from "@/lib/data";
+import { REFERENCES } from "@/lib/references";
 import { num, pct } from "@/lib/format";
 
 export const metadata: Metadata = { title: "How it works", description: "The data pipeline, models and checks behind ImmoDash, explained." };
@@ -15,15 +17,15 @@ const STEPS = [
   { n: "6", t: "Publish", d: "Every Monday the whole chain reruns and this site is rebuilt from the fresh data.", tech: "GitHub Actions, Next.js static export on Vercel" },
 ];
 
-const METRICS: { k: string; plain: string; formula: string }[] = [
-  { k: "Asking rent", plain: "The middle price per m² of flats advertised for rent in a month. Half of the listings cost more, half cost less.", formula: "Median of listing prices, GREIX hedonic index (adjusts for flat size and quality)" },
-  { k: "New-lease premium", plain: "How much more someone signing a lease today pays than the average existing tenant paid in 2022.", formula: "Asking rent ÷ Zensus 2022 average contract rent − 1" },
+const METRICS: { k: string; plain: string; formula: string; refs?: string[] }[] = [
+  { k: "Asking rent", plain: "The middle price per m² of flats advertised for rent in a month. Half of the listings cost more, half cost less.", formula: "Median of listing prices, GREIX hedonic index (adjusts for flat size and quality)", refs: ["greix-rent", "eurostat2013"] },
+  { k: "New-lease premium", plain: "How much more someone signing a lease today pays than the average existing tenant paid in 2022.", formula: "Asking rent ÷ Zensus 2022 average contract rent − 1", refs: ["bbsr-rents"] },
   { k: "Rent burden", plain: "How much of a typical household's income the rent for a 60 m² flat would take.", formula: "Rent × 60 m² × 12 ÷ (2 × disposable income per resident)" },
   { k: "Affordability index", plain: "The rent burden compared with the typical German district: 100 is average, higher is more affordable.", formula: "Median district burden ÷ district burden × 100" },
   { k: "Estimated asking rent (districts)", plain: "For districts without listing data: the census rent raised by the gap between census and asking rents seen in nearby tracked cities.", formula: "Zensus rent × (1 + premium of the city, else state median, else national median)" },
-  { k: "Supply-demand index", plain: "High when few flats are empty and the population is growing.", formula: "z(population growth 2018 to 2023) − z(empty and available flats, 2022); ≥ 1 tight, ≤ −1 slack" },
+  { k: "Supply-demand index", plain: "High when few flats are empty and the population is growing.", formula: "z(population growth 2018 to 2023) − z(empty and available flats, 2022); ≥ 1 tight, ≤ −1 slack", refs: ["bgb556d", "saxony2022"] },
   { k: "Live market pressure", plain: "How quickly flats are let in practice: days online and the share gone within a week.", formula: "Mean z-score of (inverted) days on market and share let within a week, per quarter" },
-  { k: "Unusual month", plain: "A month where one city moved far more than the others, compared with its own last two years.", formula: "City change minus all-city median change; robust z vs. previous 24 months; |z| ≥ 3.5" },
+  { k: "Unusual month", plain: "A month where one city moved far more than the others, compared with its own last two years.", formula: "City change minus all-city median change; robust z vs. previous 24 months; |z| ≥ 3.5", refs: ["iglewicz1993"] },
 ];
 
 const MODEL_NAMES: Record<string, string> = { lightgbm: "ImmoDash model", drift_last_12m: "Trend continues", naive_no_change: "No change" };
@@ -67,7 +69,7 @@ export default function Methodology() {
         <div className="wrap">
           <Head title="We tested the model on data it had never seen">
             We repeatedly cut the data at an earlier month, trained only on what was known then, and compared the forecast with what happened.
-            Twelve starting points, all 37 cities.
+            Twelve starting points, all 37 cities.<Cite id="hyndman2021" />
           </Head>
           <div className="split wl">
             <Figure title="Average forecast error, lower is better" sub="Mean absolute percentage error, out of sample."
@@ -97,10 +99,29 @@ export default function Methodology() {
               <div key={m.k}>
                 <h3>{m.k}</h3>
                 <p>{m.plain}</p>
-                <code>{m.formula}</code>
+                <code>{m.formula}</code>{m.refs && <p className="def-refs">Based on <Cite id={m.refs} /></p>}
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="section band" id="references" style={{ scrollMarginTop: 72 }}>
+        <div className="wrap">
+          <Head title="References">
+            Every explanation on this site that goes beyond our own numbers links to one of these publications. The numbers in square
+            brackets, such as <Cite id="lebuhn2017" />, point here. The datasets themselves are listed under Sources below.
+          </Head>
+          <ol className="refs reveal">
+            {REFERENCES.map((r) => (
+              <li key={r.id} id={`ref-${r.id}`}>
+                <p className="ref-cite">
+                  {r.authors} ({r.year}). <a href={r.url} target="_blank" rel="noopener noreferrer"><cite>{r.title}</cite></a>. {r.venue}.
+                </p>
+                <p className="ref-use"><b>Used for:</b> {r.supports}</p>
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
 

@@ -1,3 +1,4 @@
+import { Cite } from "@/components/Cite";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { RankBars } from "@/components/RankBars";
@@ -43,7 +44,7 @@ export default function SupplyDemand() {
       <header className="hero" style={{ paddingBottom: 32 }}>
         <div className="wrap">
           <h1 className="enter">Where demand outruns the housing stock</h1>
-          <p className="lead enter">Rents rise fastest where more people want to live than there are flats. We measure both sides in every district.</p>
+          <p className="lead enter">Where more people want to live than there are flats, rents come under pressure. We measure both sides in every district.</p>
         </div>
       </header>
       <section className="band" aria-label="Key figures">
@@ -62,9 +63,10 @@ export default function SupplyDemand() {
           <div className="reveal" style={{ marginBottom: 36 }}>
             <h2>Empty flats against population growth</h2>
             <div className="prose" style={{ marginTop: 14 }}>
-              <p><strong>Supply</strong> is the <Term k="vacancy">share of flats that stood empty and available</Term> in the 2022 census. Around
-                2 to 3% is usually considered a healthy market where people can move. <strong>Demand</strong> is population change over the last five
-                years. The <Term k="supply-demand" /> combines the two, so a district with few empty flats and a growing population scores high.</p>
+              <p><strong>Supply</strong> is the <Term k="vacancy">share of flats that stood empty and available</Term> in the 2022 census.<Cite id="destatis2024" /> Housing
+                research usually puts the vacancy a market needs for normal moving at 2 to 3%.<Cite id="saxony2022" /> <strong>Demand</strong> is population change over the last five
+                years. The <Term k="supply-demand" /> combines the two, so a district with few empty flats and a growing population scores high. German rent law uses the same two signals, low vacancy
+                and population growth without enough new building, to define a tight housing market.<Cite id="bgb556d" /></p>
             </div>
           </div>
           <Figure title="400 districts: empty flats versus population growth"

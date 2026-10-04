@@ -1,3 +1,4 @@
+import { Cite } from "@/components/Cite";
 import Link from "next/link";
 import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { CityTable } from "@/components/CityTable";
@@ -77,7 +78,7 @@ export default function Story() {
             <Stat label="Extra for a new lease" value={`+${num(h.medianPremium)}`} unit="%"
               say={<>Per m², compared with existing leases in the typical city.</>} />
             <Stat label="Mortgage rate" value={num(rate.rate_pct, 2)} unit="%"
-              say={jump ? <>Up from {num(jump.before, 2)}% at the start of 2022, so more people keep renting.</> : "Bundesbank, new housing loans."} />
+              say={jump ? <>Up from {num(jump.before, 2)}% at the start of 2022, so more people keep renting.<Cite id="bundesbank2024" /></> : "Bundesbank, new housing loans."} />
           </ul>
           <p className="meta" style={{ padding: "4px 0 26px", borderTop: "1px solid var(--line)", paddingTop: 14 }}>
             Data up to {monthLong(meta.latest_month)}. Rebuilt automatically every week, last on {meta.generated_at.slice(0, 10)}.
@@ -89,7 +90,7 @@ export default function Story() {
         <div className="wrap">
           <Head title="What would a flat cost you?">
             Pick a city, a size and your household&apos;s net income. We compare the median <Term k="asking-rent" /> with the
-            30% rule of thumb.
+            30% rule of thumb.<Cite id="lebuhn2017" />
           </Head>
           <div className="reveal"><RentCheck cities={rentCheckCities()} initialCity={big[0]?.city ?? "Berlin"} /></div>
         </div>
@@ -107,8 +108,8 @@ export default function Story() {
             howto={<>
               <p><b>Change since 2020</b> puts every city on the same starting line, so you can compare the pace of rises regardless of how
                 expensive a city was to begin with. <b>€ per m²</b> shows the actual price level.</p>
-              <p>Hover over the chart to read exact values for the highlighted cities. Monthly figures can jump when unusually many new-build
-                flats are listed at once; the long-run direction is more reliable than any single month.</p>
+              <p>Hover over the chart to read exact values for the highlighted cities. Single months can be noisy, so the long-run
+                direction is more reliable than any one month.</p>
             </>}
             numbers={<table><thead><tr><th>City</th><th className="num">Asking rent, {monthLong(lastMonth)}</th><th className="num">Since {monthLong(firstMonth)}</th><th className="num">Last 12 months</th></tr></thead>
               <tbody>{changeSince.map((x) => { const c = cities.find((k) => k.city === x.city)!; return <tr key={x.city}><td>{x.city_en}</td><td className="num">{eur(c.median_rent_sqm)}</td><td className="num">{pct(x.v, 0, true)}</td><td className="num">{pct(c.index_yoy_pct, 1, true)}</td></tr>; })}</tbody></table>}>
@@ -119,9 +120,9 @@ export default function Story() {
           <div className="split even" style={{ marginTop: 36 }}>
             <div className="prose reveal">
               <p>The figures come from <Term k="greix">GREIX</Term>, which tracks listings in {h.n} large cities and adjusts for size and quality,
-                so a rise means the same kind of flat got dearer, not that bigger flats came onto the market.</p>
+                so a rise means the same kind of flat got dearer, not that bigger flats came onto the market.<Cite id={["greix-rent", "eurostat2013"]} /></p>
               {jump && <p>The shaded year is 2022, when interest on new housing loans jumped from {num(jump.before, 2)}% to {num(jump.after, 2)}%.
-                Buying suddenly cost far more each month, which kept many would-be buyers renting. Rents kept rising through and after that shock.</p>}
+                Buying suddenly cost far more each month, which pushed housing demand towards renting.<Cite id="bundesbank2024" /> Rents kept rising through and after that shock.</p>}
             </div>
             <Takeaway>
               Asking rents in {monthLong(lastMonth)} are higher than in {monthLong(firstMonth)} in
@@ -140,7 +141,7 @@ export default function Story() {
               <p>The 2022 census recorded what people actually paid on their existing leases: the <Term k="contract-rent" />. Compared with
                 today&apos;s asking rent, a newcomer in the typical city pays a <Term k="premium">premium</Term> of <strong>{num(h.medianPremium)}%</strong>.</p>
               <p>In {prem[0].city_en} the gap reaches {num(prem[0].premium)}%: a flat an existing tenant rents for {eur(prem[0].existing)} per m² is
-                advertised at {eur(prem[0].asking)} to someone new. That is why people stay in flats that no longer fit them.</p>
+                advertised at {eur(prem[0].asking)} to someone new. This gap is one reason many people stay in flats that no longer fit them.<Cite id={["iw2026", "gohl2019"]} /></p>
             </div>
             <Takeaway>
               If you already rent, your current lease is probably worth more than you think. Compare a new rent with your old one, not with what
@@ -153,8 +154,8 @@ export default function Story() {
             howto={<>
               <p>The green dot is the average rent on all existing contracts in May 2022, including many old, cheap leases. The orange dot is
                 the median rent advertised for new leases in the latest month. The number on the right is how much more the new lease costs.</p>
-              <p>Part of the gap is four years of rent growth since 2022, part is that new listings are often renovated or newly built. Both
-                are real costs for someone looking for a flat today.</p>
+              <p>Part of the gap is four years of rent growth since 2022. Part is that rents in existing leases are adjusted to the market less
+                often, and the law caps rises for sitting tenants.<Cite id="bbsr-rents" /> Either way, it is what someone looking for a flat faces today.</p>
             </>}
             numbers={<table><thead><tr><th>City</th><th className="num">Existing 2022</th><th className="num">Asking today</th><th className="num">Extra</th></tr></thead>
               <tbody>{prem.map((r) => <tr key={r.city}><td>{r.city_en}</td><td className="num">{eur(r.existing)}</td><td className="num">{eur(r.asking)}</td><td className="num">+{num(r.premium)}%</td></tr>)}</tbody></table>}>
@@ -167,7 +168,7 @@ export default function Story() {
         <div className="wrap split flip">
           <Figure title="Expected change in asking rent over the next 12 months"
             sub="Dot: most likely change. Bar: the range the model considers 80% likely."
-            source="ImmoDash forecast (LightGBM quantile regression on the GREIX index, conformal-calibrated)."
+            source={<>ImmoDash forecast: LightGBM quantile regression on the GREIX index, conformal-calibrated.<Cite id={["ke2017", "koenker1978", "romano2019"]} /></>}
             howto={<>
               <p>Read each row as &ldquo;most likely about this much, but anywhere along the bar would not be a surprise&rdquo;. A wide bar means the
                 city&apos;s rents have been jumpy and the model is less sure.</p>
