@@ -1,4 +1,14 @@
-# ImmoDash — German rental market intelligence
+# ImmoDash: German rental market intelligence
+
+**Live site: [immodash-virid.vercel.app](https://immodash-virid.vercel.app)** · rebuilt every Monday from open data ·
+[How it works](https://immodash-virid.vercel.app/methodology) · [References](https://immodash-virid.vercel.app/methodology#references)
+
+[![ImmoDash home page: German city rents and a map of all 400 districts](docs/img/site-home.png)](https://immodash-virid.vercel.app)
+
+| District map | City profile | Affordability finder |
+|---|---|---|
+| [![Map of all 400 districts](docs/img/site-map.png)](https://immodash-virid.vercel.app/map) | [![Berlin city profile](docs/img/site-city.png)](https://immodash-virid.vercel.app/cities/berlin) | [![Where can I afford to live?](docs/img/site-afford.png)](https://immodash-virid.vercel.app/affordability) |
+
 
 A data platform and interactive dashboard for the German rental market. It brings together
 **asking rents for 37 cities (monthly, 2012 to June 2026)**, **Zensus 2022 rents for all 400 Kreise**
@@ -56,12 +66,32 @@ cd web && npm install && npm run dev     # http://localhost:3000 ; `npm run buil
 
 | Page | What it shows |
 |---|---|
-| `/` | KPIs, rent trends for up to 6 cities, sortable table of all 37 cities with 12-month forecasts |
-| `/cities/[city]` | Forecast fan with anomalies, grounded market summary, 100 m rent heatmap, days on market, Bezirke |
-| `/map` | 400-Kreis choropleth (affordability, supply vs demand, Zensus rent, est. asking rent) with Kreis detail |
-| `/supply-demand` | Vacancy vs population growth, tightest/slackest Kreise, structure vs live market |
-| `/affordability` | Budget finder by flat type or size, most and least affordable Kreise |
-| `/methodology` | Backtest accuracy, metric definitions, sources and licences |
+| `/` | An editorial data story: rent trends since 2020, the new-lease premium, a 12-month outlook, a personal rent check against the 30% rule, and all 37 cities in one sortable table |
+| `/cities`, `/cities/[city]` | 37 city profiles: grounded AI summary, forecast with 80% range, 100 m rent heatmap, days on market, rent check |
+| `/map` | All 400 districts on one map (rent today, affordability, supply vs demand, 2022 rent) with a plain-language panel per district |
+| `/affordability` | Budget finder by flat size and federal state, plus the most and least affordable districts |
+| `/supply-demand` | Empty flats against population growth for every district, with a search that highlights any district |
+| `/methodology` | Pipeline, back-test, metric definitions, 16 numbered references and all data sources with licences |
+
+Every explanatory claim on the site links to a numbered reference (official statistics, law, peer-reviewed
+methods); every number comes from the data snapshot.
+
+### Performance and accessibility
+
+Lighthouse 12, desktop profile, production build:
+
+| Page | Performance | Accessibility | Best practices | SEO |
+|---|---|---|---|---|
+| `/` | 99 | 100 | 100 | 100 |
+| `/cities/berlin` | 97 | 100 | 100 | 100 |
+| `/map` | 96 | 98 | 100 | 100 |
+| `/supply-demand` | 98 | 100 | 100 | 100 |
+| `/affordability` | 90 | 100 | 100 | 100 |
+| `/methodology` | 100 | 100 | 100 | 100 |
+
+The home page map is projected at build time and charts below the fold mount when they scroll into view.
+On Lighthouse's throttled mobile profile the chart-heavy pages score lower on performance (main-thread
+time for interactive charts); accessibility, best practices and SEO stay at 100.
 
 ## What the analyst dashboard answers
 
@@ -92,7 +122,7 @@ cd web && npm install && npm run dev     # http://localhost:3000 ; `npm run buil
 | Asking premium | GREIX median asking rent ÷ Zensus 2022 existing-contract rent − 1 | `fct_city_snapshot` |
 | Est. asking rent (Kreis) | Zensus rent × (1 + premium), using the city's own premium, else the Land median, else the national median | `fct_kreis_asking_rent_estimate` |
 | Demand pressure score | Mean of z-scores of (inverted) days on market and share of listings closed within a week, per quarter | `fct_city_market_pressure` |
-| Supply-demand index | z(population growth 2018–2023) − z(market-active vacancy 2022); ≥ 1 tight, ≤ −1 slack | `fct_kreis_supply_demand` |
+| Supply-demand index | z(population growth 2018 to 2023) − z(market-active vacancy 2022); ≥ 1 tight, ≤ −1 slack | `fct_kreis_supply_demand` |
 | Neighbourhood spread | P90 / P10 of reliable 1 km grid-cell rents within a Kreis | `fct_kreis_neighbourhood_spread` |
 | Rent forecast | LightGBM quantile models per horizon on the hedonic index, converted to €/m²; 80 % band widened by sequential split-conformal calibration | `ml.rent_forecast` |
 | Anomaly | City MoM change minus cross-city median MoM, robust z vs. the city's previous 24 months, \|z\| ≥ 3.5 | `ml.rent_anomalies` |
@@ -133,7 +163,7 @@ dbt build and tests, ML, pytest, every API endpoint over HTTP, every dashboard c
 dark mode, and (with `--postgres URL`) the whole production path on Postgres. It writes
 `reports/verification_report.html` with the results and interactive charts.
 
-Latest run: 8/8 passed (DuckDB and Postgres), 28 pytest tests, 63 dbt data tests, 25/25 endpoints,
+Latest run: 8/8 passed (DuckDB and Postgres), 28 pytest tests, 63 dbt data tests, 25/25 endpoint checks,
 46/46 callback runs. 12-month forecast MAPE 1.74 % vs 2.33 % for trend continuation and 4.59 % for
 "no change"; 82 % of outcomes fell inside the 80 % interval.
 
@@ -153,10 +183,10 @@ To run the orchestrated refresh: `pip install -r requirements-orchestration.txt`
 | Source | What | Granularity | Licence |
 |---|---|---|---|
 | Zensus 2022, table 4000W-0011 | Average net cold rent per m² by number of rooms (existing contracts) | 400 Kreise, 15 May 2022 | dl-de/by-2-0 |
-| VGR der Länder, R2 B3 (2024) | Disposable household income (total and per resident), population | Kreis, 1995–2023 | dl-de/by-2-0 |
-| GREIX Mietpreisindex (Kiel Institute) | Asking rents per m² (mean, median, P25, P75), hedonic index, days on market | 37 cities, monthly 2012–2026 | Free with attribution |
+| VGR der Länder, R2 B3 (2024) | Disposable household income (total and per resident), population | Kreis, 1995 to 2023 | dl-de/by-2-0 |
+| GREIX Mietpreisindex (Kiel Institute) | Asking rents per m² (mean, median, P25, P75), hedonic index, days on market | 37 cities, monthly 2012 to 2026 | Free with attribution |
 | GREIX rent vs. transaction index | Rent index and sales price index | Cities, quarterly | Free with attribution |
-| Deutsche Bundesbank (SUD131Z) | Effective interest rate on new housing loans to households | Germany, monthly 2003– | Free with attribution |
+| Deutsche Bundesbank (SUD131Z) | Effective interest rate on new housing loans to households | Germany, monthly since 2003 | Free with attribution |
 | Zensus 2022, table 4000W-0002 | Market-active vacancy rate | 400 Kreise | dl-de/by-2-0 |
 | Zensus 2022, table 4000W-0009 | Rent per m² by floor area (20 m² bands) | 400 Kreise | dl-de/by-2-0 |
 | Zensus 2022, table 4000W-0004 | Rent per m² for Berlin and Hamburg Bezirke | 19 Bezirke | dl-de/by-2-0 |
@@ -179,7 +209,7 @@ web/                         Next.js 16 static site (Vercel); web/public/data is
 deploy/railway/              Railway config-as-code for api, dashboard and the daily refresh cron
 scripts/                     run_local.sh (make demo), verify.py + report.py (make verify)
 tests/                       pytest suite (builds a throwaway warehouse per session)
-docs/                        handoff, data sources, architecture decision records
+docs/                        data sources, deployment guide, architecture decision records, screenshots
 ```
 
 ## Known limitations
@@ -190,16 +220,25 @@ docs/                        handoff, data sources, architecture decision record
 - Income data runs to 2023, while asking rents run to mid-2026. The city burden therefore pairs the
   latest of each, and the Kreis affordability index uses 2022 for both.
 - Forecasts cover the 37 GREIX cities, which are the only places with a monthly series.
-- Population growth 2018–2023 includes the 2022 refugee arrivals, which raise demand everywhere.
+- Population growth 2018 to 2023 includes the 2022 refugee arrivals, which raise demand everywhere.
 - Boundaries are from 2021. Eisenach (merged into the Wartburgkreis in July 2021) is re-keyed
   to AGS 16063.
 
-## Roadmap
+## What I'd do next
 
-- **Done**: Phase 1 (core dashboard), Phase 2 (map, supply/demand, neighbourhood heatmaps,
-  segment filters), Phase 3 (forecasting, anomalies, affordability finder, grounded AI summary).
-- **Done**: Next.js frontend; free always-on deployment (Vercel + GitHub Actions), optional Railway/Render configs.
-- **Next**: go live on a custom domain; listing-level data if a licensed feed becomes available.
+- **Listing-level data**: GREIX covers 37 cities; a licensed listings feed would give measured (not modelled)
+  asking rents for the other 363 districts and real neighbourhood-level trends.
+- **Better mobile performance**: move the chart data into per-page JSON loaded on demand and render the
+  heavier charts as static SVG first, to cut main-thread time on low-end phones.
+- **Forecast drivers**: add income, construction permits and interest rates as features, and show which
+  ones move each city's outlook.
+- **Data freshness alerts**: notify when a source stops updating, not only when the weekly run fails.
+- **German language version**, since most renters looking at German districts read German first.
+
+## Licence
+
+Code: [MIT](LICENSE). Data: each source keeps its own licence (see the table above); attribution is
+shown on the site and in `sources.json`.
 
 ---
 Built by Zoeb Ali Khan · [github.com/zoeb7184](https://github.com/zoeb7184) · [zoeb7184.github.io](https://zoeb7184.github.io)

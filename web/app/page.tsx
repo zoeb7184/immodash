@@ -3,6 +3,8 @@ import Link from "next/link";
 import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { CityTable } from "@/components/CityTable";
 import { HeroMap } from "@/components/HeroMap";
+import { LazyMount } from "@/components/LazyMount";
+import { heroMap } from "@/lib/heroMap";
 import { RentCheck } from "@/components/RentCheck";
 import { OutlookChart, PremiumChart } from "@/components/StoryCharts";
 import { Term } from "@/components/Term";
@@ -64,7 +66,7 @@ export default function Story() {
               <Link className="textlink" href="/cities">Browse 37 cities <ArrowRight size={15} weight="bold" aria-hidden /></Link>
             </div>
           </div>
-          <HeroMap rents={heroRents} names={heroNames} />
+          <HeroMap {...heroMap(heroRents)} rents={heroRents} names={heroNames} />
         </div>
       </header>
 
@@ -113,9 +115,9 @@ export default function Story() {
             </>}
             numbers={<table><thead><tr><th>City</th><th className="num">Asking rent, {monthLong(lastMonth)}</th><th className="num">Since {monthLong(firstMonth)}</th><th className="num">Last 12 months</th></tr></thead>
               <tbody>{changeSince.map((x) => { const c = cities.find((k) => k.city === x.city)!; return <tr key={x.city}><td>{x.city_en}</td><td className="num">{eur(c.median_rent_sqm)}</td><td className="num">{pct(x.v, 0, true)}</td><td className="num">{pct(c.index_yoy_pct, 1, true)}</td></tr>; })}</tbody></table>}>
-            <TrendStory monthly={monthly} initial={big.slice(0, 4).map((c) => c.city)}
+            <LazyMount minHeight={534}><TrendStory monthly={monthly} initial={big.slice(0, 4).map((c) => c.city)}
               cities={cities.map((c) => ({ city: c.city, city_en: c.city_en, population: c.population, index_5y_pct: c.index_5y_pct, median: c.median_rent_sqm }))}
-              rateBand={jump ? { from: jump.from, to: jump.to, label: `Loan rates ${num(jump.before, 1)}% to ${num(jump.after, 1)}%` } : null} />
+              rateBand={jump ? { from: jump.from, to: jump.to, label: `Loan rates ${num(jump.before, 1)}% to ${num(jump.after, 1)}%` } : null} /></LazyMount>
           </Figure>
           <div className="split even" style={{ marginTop: 36 }}>
             <div className="prose reveal">
@@ -159,7 +161,7 @@ export default function Story() {
             </>}
             numbers={<table><thead><tr><th>City</th><th className="num">Existing 2022</th><th className="num">Asking today</th><th className="num">Extra</th></tr></thead>
               <tbody>{prem.map((r) => <tr key={r.city}><td>{r.city_en}</td><td className="num">{eur(r.existing)}</td><td className="num">{eur(r.asking)}</td><td className="num">+{num(r.premium)}%</td></tr>)}</tbody></table>}>
-            <PremiumChart rows={prem} />
+            <LazyMount minHeight={468}><PremiumChart rows={prem} /></LazyMount>
           </Figure>
         </div>
       </section>
@@ -177,7 +179,7 @@ export default function Story() {
             </>}
             numbers={<table><thead><tr><th>City</th><th className="num">Now</th><th className="num">Low</th><th className="num">Most likely</th><th className="num">High</th></tr></thead>
               <tbody>{out.map((r) => <tr key={r.city}><td>{r.city_en}</td><td className="num">{eur(r.now)}</td><td className="num">{eur(r.p10)}</td><td className="num">{eur(r.p50)}</td><td className="num">{eur(r.p90)}</td></tr>)}</tbody></table>}>
-            <OutlookChart rows={outlookRows()} />
+            <LazyMount minHeight={468}><OutlookChart rows={outlookRows()} /></LazyMount>
           </Figure>
           <div className="sticky">
             <h2 className="reveal">Rents are expected to keep rising</h2>

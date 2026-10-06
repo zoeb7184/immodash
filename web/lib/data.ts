@@ -50,5 +50,6 @@ export const data = {
   bezirke: () => read<Bezirk[]>("bezirke.json"),
   sources: () => read<Source[]>("sources.json"),
   geo: () => read<KreisGeo>("geo-kreise.json"),
+  geoLite: () => read<KreisGeo>("geo-kreise-lite.json"),
   summary: (slug: string) => read<Summary>(`summaries/${slug}.json`),
 };

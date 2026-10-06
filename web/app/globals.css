@@ -270,9 +270,9 @@ a svg { vertical-align: -2px; }
   transition: left 0.35s var(--ease); }
 .meter-scale { display: flex; justify-content: space-between; font: 500 11.5px var(--mono); color: var(--muted); margin-top: 6px; }
 .verdict { display: inline-flex; align-items: center; gap: 6px; font: 600 13px var(--sans); padding: 4px 11px; border-radius: var(--r-pill); }
-.verdict.ok { background: color-mix(in srgb, var(--good) 14%, transparent); color: var(--good); }
-.verdict.stretch { background: color-mix(in srgb, var(--warn) 16%, transparent); color: var(--warn); }
-.verdict.tough { background: color-mix(in srgb, var(--bad) 14%, transparent); color: var(--bad); }
+.verdict.ok { background: color-mix(in srgb, var(--good) 14%, transparent); color: color-mix(in srgb, var(--good) 78%, var(--ink)); }
+.verdict.stretch { background: color-mix(in srgb, var(--warn) 16%, transparent); color: color-mix(in srgb, var(--warn) 78%, var(--ink)); }
+.verdict.tough { background: color-mix(in srgb, var(--bad) 14%, transparent); color: color-mix(in srgb, var(--bad) 78%, var(--ink)); }
 
 /* tables (data: tabular figures) */
 .tablewrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
@@ -288,9 +288,9 @@ tbody tr:hover { background: var(--surface-2); }
 td.cellwrap { white-space: normal; }
 .up { color: var(--bad); } .down { color: var(--good); }
 .pill { font: 600 12px var(--sans); padding: 3px 10px; border-radius: var(--r-pill); text-transform: capitalize; white-space: nowrap; }
-.pill.tight { background: color-mix(in srgb, var(--d-neg2) 14%, transparent); color: var(--d-neg2); }
+.pill.tight { background: color-mix(in srgb, var(--d-neg2) 14%, transparent); color: color-mix(in srgb, var(--d-neg2) 78%, var(--ink)); }
 .pill.balanced { background: color-mix(in srgb, var(--ink) 8%, transparent); color: var(--ink-2); }
-.pill.slack { background: color-mix(in srgb, var(--d-pos2) 14%, transparent); color: var(--d-pos2); }
+.pill.slack { background: color-mix(in srgb, var(--d-pos2) 14%, transparent); color: color-mix(in srgb, var(--d-pos2) 78%, var(--ink)); }
 .bar-cell { display: inline-block; height: 6px; border-radius: 0 3px 3px 0; background: var(--s1); vertical-align: middle; margin-right: 10px; opacity: 0.85; }
 
 /* chart chrome */
@@ -397,6 +397,7 @@ pre { font: 12px/1.5 var(--mono); background: var(--surface-2); padding: 14px; b
 
 
 /* motion: one authored moment (the hero map paints from cheapest to dearest district). Everything else is static and visible. */
+.hero-map path.k { stroke: var(--bg); stroke-width: 0.6; }
 .js .hero-map path.k { animation: paint 0.9s cubic-bezier(0.16, 1, 0.3, 1) backwards; animation-delay: calc(var(--rank, 0) * 2.2ms); }
 @keyframes paint { from { opacity: 0.18; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) {

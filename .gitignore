@@ -13,3 +13,6 @@ _to_delete/
 .DS_Store
 reports/*.fragment.html
 dbt/.user.yml
+
+# private notes, kept on this Mac only (handoff, old planning docs, helper scripts)
+.private/

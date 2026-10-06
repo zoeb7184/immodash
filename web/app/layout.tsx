@@ -8,7 +8,13 @@ import { Footer } from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: { default: "ImmoDash · What renting in Germany really costs", template: "%s · ImmoDash" },
-  openGraph: { title: "ImmoDash: what renting in Germany really costs", type: "website", locale: "en_GB" },
+  metadataBase: new URL("https://immodash-virid.vercel.app"),
+  openGraph: {
+    title: "ImmoDash: what renting in Germany really costs", type: "website", locale: "en_GB", siteName: "ImmoDash",
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "ImmoDash: map of Germany's 400 districts coloured by asking rent" }],
+  },
+  twitter: { card: "summary_large_image", title: "ImmoDash: what renting in Germany really costs", images: ["/og.png"] },
+  authors: [{ name: "Zoeb Ali Khan", url: "https://zoeb7184.github.io" }],
   description:
     "An interactive guide to German rents: how fast asking rents are rising in 37 cities, what a flat costs against local incomes, where the market is tightest, and a 12-month outlook. Rebuilt every week from open data.",
 };
