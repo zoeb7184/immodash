@@ -42,6 +42,7 @@ ENDPOINTS = [
     "/kreise/rents-by-size?size_band=WFL060B079", "/kreise/supply-demand", "/cities/supply-demand",
     "/kreise/neighbourhood-spread", "/kreise/11000/grid", "/kreise/05711/grid?resolution_m=1000", "/bezirke/rents",
     "/forecasts", "/forecasts/backtest", "/anomalies", "/cities/Bielefeld/summary?llm=false",
+    "/kreise/rent-range", "/postcodes/rents?ags=05711",
 ]
 
 

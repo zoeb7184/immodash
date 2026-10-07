@@ -32,3 +32,13 @@ The source registry is in `ingestion/immodash_ingest/config.py`.
 - **ImmobilienScout24 / Immowelt scraping**: their terms of service prohibit automated collection,
   and the portals use bot protection. See ADR 0002.
 - **RWI-GEO-RED**: microdata are available only for research through the FDZ Ruhr, under a contract.
+
+## OpenStreetMap postcode areas (`data/raw/osm_postcodes/`)
+
+- Source: German postcode (PLZ) boundaries extracted from OpenStreetMap by https://github.com/yetzt/postleitzahlen,
+  release 2026.02 (`postleitzahlen.geojson.br`). Licence: ODbL 1.0, © OpenStreetMap contributors.
+- Prepared with `python scripts/prepare_postcodes.py ~/Downloads/postleitzahlen.geojson.br` (needs `pip install brotli`):
+  keeps the 1,160 postcodes that lie at least 5% inside a Kreis with a GREIX city, simplified to about 5 m.
+- Used at ingestion to give every 100 m Zensus grid cell its postcode (point in polygon on the cell centre);
+  dbt aggregates them in `fct_postcode_rent`. Postcode areas change rarely, so this is a manual refresh.
+- Because `postcodes.json` on the website is derived from OpenStreetMap data, it is shared under the ODbL.

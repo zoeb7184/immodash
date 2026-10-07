@@ -78,6 +78,8 @@ def export(out: Path, use_llm: bool = True) -> dict:
     put("kreise-rents-by-size.json", get("/kreise/rents-by-size"))
     put("bezirke.json", get("/bezirke/rents"))
     put("sources.json", get("/meta/sources"))
+    put("kreise-rent-range.json", get("/kreise/rent-range"))
+    put("postcodes.json", get("/postcodes/rents"))
     put("geo-kreise.json", get("/geo/kreise", simplify=0.003))
     put("geo-kreise-lite.json", get("/geo/kreise", simplify=0.012))  # hero map: outline only, ~5x smaller
 

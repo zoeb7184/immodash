@@ -67,10 +67,35 @@ def parse_1km(zip_path: Path, geojson_path: Path) -> pd.DataFrame:
     return out
 
 
-def parse_100m_for(zip_path: Path, geojson_path: Path, ags_codes: set[str]) -> pd.DataFrame:
+def postcode_polygons_3035(geojson_path: Path) -> dict[str, shapely.Geometry]:
+    """Postcode (PLZ) -> polygon in EPSG:3035, from the OpenStreetMap subset in data/raw/osm_postcodes."""
+    gj = json.loads(Path(geojson_path).read_text(encoding="utf-8"))
+    polys: dict[str, list] = {}
+    for feat in gj["features"]:
+        polys.setdefault(str(feat["properties"]["plz"]), []).append(transform(_TO_3035, shape(feat["geometry"])))
+    return {p: shapely.union_all(g) for p, g in polys.items()}
+
+
+def _assign_postcode(df: pd.DataFrame, polys: dict[str, shapely.Geometry]) -> pd.Series:
+    """Postcode of each grid-cell centre (point in polygon); None where no postcode area covers it."""
+    xs, ys = df["x"].to_numpy(float), df["y"].to_numpy(float)
+    plz = np.full(len(df), None, dtype=object)
+    for code, poly in polys.items():
+        minx, miny, maxx, maxy = poly.bounds
+        cand = np.where((xs >= minx) & (xs <= maxx) & (ys >= miny) & (ys <= maxy) & (plz == None))[0]  # noqa: E711
+        if len(cand) == 0:
+            continue
+        shapely.prepare(poly)
+        plz[cand[shapely.contains_xy(poly, xs[cand], ys[cand])]] = code
+    return pd.Series(plz, index=df.index)
+
+
+def parse_100m_for(zip_path: Path, geojson_path: Path, ags_codes: set[str], postcodes_path: Path | None = None) -> pd.DataFrame:
     df = _read_grid(zip_path, "100m")
     out = _assign_kreis(df, kreis_polygons_3035(geojson_path), only=ags_codes)
     out["resolution_m"] = 100
+    has_plz = postcodes_path is not None and Path(postcodes_path).exists()
+    out["plz"] = _assign_postcode(out, postcode_polygons_3035(postcodes_path)) if has_plz else None
     return out
 
 

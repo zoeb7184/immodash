@@ -41,7 +41,7 @@ JOBS: list[Job] = [
     Job("zensus_bezirke_rent", "zensus_bezirke_rent", zensus.parse_bezirke_rent),
     Job("zensus_grid_rent", "zensus_grid_rent_1km", lambda p: zensus_grid.parse_1km(p, _geo())),
     Job("zensus_grid_rent", "zensus_grid_rent_100m",
-        lambda p: zensus_grid.parse_100m_for(p, _geo(), city_kreis_codes())),
+        lambda p: zensus_grid.parse_100m_for(p, _geo(), city_kreis_codes(), raw_path("osm_postcodes"))),
     Job("geo_kreise", "geo_kreise_outline_3035", lambda p: zensus_grid.kreis_outlines_3035(p)),
     Job("vgrdl_income", "vgrdl_income_population", vgrdl.parse),
     Job("greix_rents", "greix_city_rents", greix.parse_rents),

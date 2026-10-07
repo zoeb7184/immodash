@@ -72,6 +72,14 @@ SOURCES: dict[str, Source] = {
             publisher="Statistische Ämter des Bundes und der Länder, Zensus 2022 (table 4000W-0004, Bezirke)",
         ),
         Source(
+            key="osm_postcodes",
+            folder="osm_postcodes",
+            filename="postleitzahlen_city_kreise.geojson",
+            url=None,  # subset of github.com/yetzt/postleitzahlen (release 2026.02), made by scripts/prepare_postcodes.py
+            licence="ODbL 1.0 (© OpenStreetMap contributors); the derived postcode rent table is shared under ODbL",
+            publisher="OpenStreetMap postcode boundaries via yetzt/postleitzahlen (release 2026.02)",
+        ),
+        Source(
             key="zensus_grid_rent",
             folder="zensus_grid",
             filename="Zensus2022_Durchschn_Nettokaltmiete.zip",

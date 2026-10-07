@@ -31,11 +31,13 @@ from .schemas import (
     KreisAskingRent,
     KreisRent,
     KreisRentBySize,
+    KreisRentRange,
     KreisSupplyDemand,
     MarketPressurePoint,
     MarketSummary,
     MortgageRatePoint,
     NeighbourhoodSpread,
+    PostcodeRent,
     RentAnomaly,
     RentForecast,
     SourceInfo,
@@ -249,6 +251,23 @@ def city_supply_demand() -> list[dict]:
 @app.get("/kreise/neighbourhood-spread", response_model=list[NeighbourhoodSpread])
 def neighbourhood_spread() -> list[dict]:
     return db.fetch_all("select * from gold.fct_kreis_neighbourhood_spread order by p90_p10_ratio desc")
+
+
+@app.get("/kreise/rent-range", response_model=list[KreisRentRange])
+def kreis_rent_range() -> list[dict]:
+    """How far rents spread inside each Kreis (10th to 90th percentile of Zensus grid cells)."""
+    return db.fetch_all("select * from gold.fct_kreis_rent_range order by ags")
+
+
+@app.get("/postcodes/rents", response_model=list[PostcodeRent])
+def postcode_rents(ags: str | None = Query(None, description="Limit to one Kreis")) -> list[dict]:
+    """Rent level per postcode in the 37 GREIX-city Kreise (postcode areas: OpenStreetMap, ODbL)."""
+    if ags:
+        rows = db.fetch_all("select * from gold.fct_postcode_rent where ags = :a order by plz", {"a": ags})
+        if not rows:
+            raise HTTPException(404, f"no postcode data for Kreis {ags}")
+        return rows
+    return db.fetch_all("select * from gold.fct_postcode_rent order by ags, plz")
 
 
 @app.get("/kreise/{ags}/grid", response_model=GridCells)

@@ -10,9 +10,9 @@ export const metadata: Metadata = { title: "How it works", description: "The dat
 
 const STEPS = [
   { n: "1", t: "Collect", d: "Ten open datasets: Zensus 2022, GREIX listings, Bundesbank loan rates, regional incomes, district boundaries.", tech: "Python ingestion, raw files kept as-is (bronze)" },
-  { n: "2", t: "Clean and test", d: "Tables are joined to Germany's 400 districts and checked automatically: no gaps, no impossible values.", tech: "dbt on DuckDB / PostgreSQL, 63 data tests" },
+  { n: "2", t: "Clean and test", d: "Tables are joined to Germany's 400 districts and checked automatically: no gaps, no impossible values.", tech: "dbt on DuckDB / PostgreSQL, 75 data tests" },
   { n: "3", t: "Model", d: "A forecasting model predicts each city's rent 3, 6 and 12 months ahead, and unusual months are flagged.", tech: "LightGBM quantile regression, conformal intervals, robust z-scores" },
-  { n: "4", t: "Serve", d: "Every number on this site comes from one typed interface, so the website and analyst tools never disagree.", tech: "FastAPI, 23 endpoints, Pydantic contracts" },
+  { n: "4", t: "Serve", d: "Every number on this site comes from one typed interface, so the website and analyst tools never disagree.", tech: "FastAPI, 25 endpoints, Pydantic contracts" },
   { n: "5", t: "Explain", d: "An AI model writes each city summary from a fixed list of facts. If it uses a number that is not in the list, the text is thrown away.", tech: "Groq LLM + numeric grounding check" },
   { n: "6", t: "Publish", d: "Every Monday the whole chain reruns and this site is rebuilt from the fresh data.", tech: "GitHub Actions, Next.js static export on Vercel" },
 ];
@@ -23,6 +23,8 @@ const METRICS: { k: string; plain: string; formula: string; refs?: string[] }[] 
   { k: "Rent burden", plain: "How much of a typical household's income the rent for a 60 m² flat would take.", formula: "Rent × 60 m² × 12 ÷ (2 × disposable income per resident)" },
   { k: "Affordability index", plain: "The rent burden compared with the typical German district: 100 is average, higher is more affordable.", formula: "Median district burden ÷ district burden × 100" },
   { k: "Estimated asking rent (districts)", plain: "For districts without listing data: the census rent raised by the gap between census and asking rents seen in nearby tracked cities.", formula: "Zensus rent × (1 + premium of the city, else state median, else national median)" },
+  { k: "Rent range within a district", plain: "Rents differ from street to street. The range shows the cheaper and dearer ends of a district, leaving out the cheapest and dearest 10% of its area.", formula: "District estimate × (10th and 90th percentile ÷ median) of Zensus grid cells: 100 m in the 37 cities, 1 km elsewhere" },
+  { k: "Postcode estimate", plain: "For the 37 cities: how a postcode compares with the rest of its city, applied to the city-wide estimate.", formula: "District estimate × median grid rent of the postcode's 100 m cells ÷ city median (postcode areas: OpenStreetMap)" },
   { k: "Supply-demand index", plain: "High when few flats are empty and the population is growing.", formula: "z(population growth 2018 to 2023) − z(empty and available flats, 2022); ≥ 1 tight, ≤ −1 slack", refs: ["bgb556d", "saxony2022"] },
   { k: "Live market pressure", plain: "How quickly flats are let in practice: days online and the share gone within a week.", formula: "Mean z-score of (inverted) days on market and share let within a week, per quarter" },
   { k: "Unusual month", plain: "A month where one city moved far more than the others, compared with its own last two years.", formula: "City change minus all-city median change; robust z vs. previous 24 months; |z| ≥ 3.5", refs: ["iglewicz1993"] },
@@ -45,7 +47,7 @@ export default function Methodology() {
         facts={<>
           <Stat label="Last automatic run" value={fmtDay(meta.generated_at)} say="Rebuilt every Monday by GitHub Actions." />
           <Stat label="Data files" value={meta.files} say={<>Published by one tested pipeline{meta.summaries_by_llm > 0 && <>, with {meta.summaries_by_llm} AI-written city summaries</>}.</>} />
-          <Stat label="Checks" value={63} unit="data tests" say="Run before anything is published." />
+          <Stat label="Checks" value={75} unit="data tests" say="Run before anything is published." />
           <Stat label="References" value={REFERENCES.length} unit="publications" say={<>Back the explanations. <a href="#references">See the list</a>.</>} />
         </>} />
 

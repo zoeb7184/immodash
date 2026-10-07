@@ -396,6 +396,17 @@ pre { font: 12px/1.5 var(--mono); background: var(--surface-2); padding: 14px; b
 @media (pointer: coarse) { .foot-cols a { min-height: 44px; } .foot-cols ul { gap: 0; } }
 
 
+/* finder: range inside a district and postcode table */
+.range-bar { margin-top: 16px; }
+.range-head { display: flex; justify-content: space-between; gap: 8px; font: 500 13px var(--sans); color: var(--muted); }
+.range-head b { color: var(--ink); font-weight: 600; font-size: 15px; }
+.range-track { position: relative; height: 10px; margin: 6px 0; border-radius: var(--r-pill);
+  background: linear-gradient(90deg, var(--q1), var(--q3), var(--q5)); }
+.range-budget { position: absolute; top: -5px; width: 3px; height: 20px; margin-left: -1.5px; border-radius: 2px; background: var(--ink); box-shadow: 0 0 0 2px var(--surface); }
+.plz-box { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); }
+.plz-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.plz-box td, .plz-box th { padding-block: 8px; }
+
 /* about page */
 .about-photo { margin: 0; }
 .about-photo img { display: block; width: 100%; height: auto; border-radius: var(--r-box); background: var(--surface-2); aspect-ratio: 3 / 2; object-fit: cover; }

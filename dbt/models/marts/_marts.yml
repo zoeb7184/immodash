@@ -150,3 +150,48 @@ models:
   - name: bezirk_code
     data_tests:
     - unique
+- name: fct_postcode_rent
+  description: Rent level per postcode (PLZ) inside the 37 GREIX-city Kreise, from reliable 100 m Zensus grid cells.
+  columns:
+  - name: ags
+    data_tests:
+    - not_null
+    - relationships:
+        arguments:
+          to: ref('dim_kreis')
+          field: ags
+  - name: plz
+    data_tests:
+    - not_null
+  - name: rent_index_vs_kreis
+    data_tests:
+    - not_null
+    - between:
+        arguments:
+          min_value: 40
+          max_value: 250
+  data_tests:
+  - unique:
+      arguments:
+        column_name: ags || '-' || plz
+- name: fct_kreis_rent_range
+  description: Spread of rents inside each Kreis (10th to 90th percentile of grid cells, 100 m in cities, else 1 km).
+  columns:
+  - name: ags
+    data_tests:
+    - unique
+    - not_null
+  - name: p10_index
+    data_tests:
+    - not_null
+    - between:
+        arguments:
+          min_value: 30
+          max_value: 100
+  - name: p90_index
+    data_tests:
+    - not_null
+    - between:
+        arguments:
+          min_value: 100
+          max_value: 300

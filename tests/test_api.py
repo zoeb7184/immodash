@@ -49,3 +49,16 @@ def test_geojson_keys_match_kreise(api_client):
     ids = {f["id"] for f in gj["features"]}
     kreise = {r["ags"] for r in api_client.get("/kreise/affordability").json()}
     assert kreise <= ids
+
+
+def test_rent_range_covers_every_kreis(api_client):
+    rows = api_client.get("/kreise/rent-range").json()
+    assert len(rows) == 400
+    assert all(r["p10_index"] <= 100 <= r["p90_index"] for r in rows)
+
+
+def test_postcode_rents_for_a_city(api_client):
+    rows = api_client.get("/postcodes/rents", params={"ags": "05711"}).json()
+    assert rows and all(r["ags"] == "05711" and len(r["plz"]) == 5 for r in rows)
+    assert any(r["plz"] == "33602" for r in rows)
+    assert api_client.get("/postcodes/rents", params={"ags": "99999"}).status_code == 404

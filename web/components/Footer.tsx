@@ -62,7 +62,7 @@ export function Footer({ latestMonth, generatedAt }: { latestMonth: string; gene
         <p>&copy; {year} Zoeb Ali Khan. A student portfolio project, not affiliated with the data providers. Estimates, not financial advice.</p>
         <p>
           Data: Zensus 2022 and VGR der Länder (Statistische Ämter des Bundes und der Länder, dl-de/by-2-0); GREIX Mietpreisindex (Kiel Institut
-          für Weltwirtschaft); Deutsche Bundesbank; &copy; GeoBasis-DE / BKG. Asking rents outside the 37 GREIX cities are model estimates.
+          für Weltwirtschaft); Deutsche Bundesbank; &copy; GeoBasis-DE / BKG; postcode areas and basemap &copy; OpenStreetMap contributors (ODbL). Asking rents outside the 37 GREIX cities are model estimates.
         </p>
       </div>
     </footer>

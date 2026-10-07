@@ -31,7 +31,7 @@ flowchart LR
     end
     Sources -->|immodash_ingest| BR[(bronze)]
     BR -->|dbt staging| SI[(silver)]
-    SI -->|dbt marts + 63 tests| GO[(gold)]
+    SI -->|dbt marts + 75 tests| GO[(gold)]
     GO -->|python -m ml| ML[(ml: forecasts,<br/>anomalies)]
     GO --> API[FastAPI<br/>typed contracts]
     ML --> API
@@ -47,7 +47,7 @@ flowchart LR
 |---|---|
 | Ingestion | Python (`requests`, `pandas`, `openpyxl`), one parser per source, idempotent bronze loads |
 | Warehouse | DuckDB locally, PostgreSQL in production. The same dbt project runs on both. |
-| Transformations | dbt: bronze → silver (staging views) → gold (marts), plus 63 data tests |
+| Transformations | dbt: bronze → silver (staging views) → gold (marts), plus 75 data tests |
 | Intelligence | LightGBM quantile regression + conformal calibration, robust-z anomaly detection, Groq LLM with a numeric grounding check |
 | Geo | pyproj + shapely: 136k 1 km and 245k 100 m Zensus grid cells assigned to Kreise |
 | Orchestration | Prefect flow `immodash-daily-refresh`; weekly GitHub Actions job that rebuilds everything and publishes the site snapshot |
@@ -69,7 +69,7 @@ cd web && npm install && npm run dev     # http://localhost:3000 ; `npm run buil
 | `/` | An editorial data story: rent trends since 2020, the new-lease premium, a 12-month outlook, a personal rent check against the 30% rule, and all 37 cities in one sortable table |
 | `/cities`, `/cities/[city]` | 37 city profiles: grounded AI summary, forecast with 80% range, 100 m rent grid on a zoomable street map (MapLibre + OpenFreeMap), days on market, rent check |
 | `/map` | All 400 districts on one map (rent today, affordability, supply vs demand, 2022 rent) with a plain-language panel per district |
-| `/affordability` | Budget finder by flat size and federal state, plus the most and least affordable districts |
+| `/affordability` | Budget finder by flat size and federal state: district average, the range from cheaper to dearer areas, and an estimate for every postcode in the 37 cities; plus the most and least affordable districts |
 | `/supply-demand` | Empty flats against population growth for every district, with a search that highlights any district |
 | `/methodology` | Pipeline, back-test, metric definitions, 21 numbered references and all data sources with licences |
 | `/about` | Why I built it: from growing up in Mumbai to the German flat search, with cited figures on housing costs for low-income households |
@@ -125,6 +125,8 @@ time for interactive charts); accessibility, best practices and SEO stay at 100.
 | Demand pressure score | Mean of z-scores of (inverted) days on market and share of listings closed within a week, per quarter | `fct_city_market_pressure` |
 | Supply-demand index | z(population growth 2018 to 2023) − z(market-active vacancy 2022); ≥ 1 tight, ≤ −1 slack | `fct_kreis_supply_demand` |
 | Neighbourhood spread | P90 / P10 of reliable 1 km grid-cell rents within a Kreis | `fct_kreis_neighbourhood_spread` |
+| Rent range (Kreis) | P10 and P90 of reliable grid-cell rents relative to the median (100 m cells in the 37 city Kreise, 1 km elsewhere); the finder applies them to the Kreis estimate | `fct_kreis_rent_range` |
+| Postcode rent | Median of the postcode's reliable 100 m cells ÷ city median × 100; the finder scales the city estimate by it | `fct_postcode_rent` |
 | Rent forecast | LightGBM quantile models per horizon on the hedonic index, converted to €/m²; 80 % band widened by sequential split-conformal calibration | `ml.rent_forecast` |
 | Anomaly | City MoM change minus cross-city median MoM, robust z vs. the city's previous 24 months, \|z\| ≥ 3.5 | `ml.rent_anomalies` |
 | Reference loan payment | €300k × (rate + 2% amortisation) ÷ 12 | `fct_mortgage_rates` |
@@ -164,7 +166,7 @@ dbt build and tests, ML, pytest, every API endpoint over HTTP, every dashboard c
 dark mode, and (with `--postgres URL`) the whole production path on Postgres. It writes
 `reports/verification_report.html` with the results and interactive charts.
 
-Latest run: 8/8 passed (DuckDB and Postgres), 28 pytest tests, 63 dbt data tests, 25/25 endpoint checks,
+Latest run: 8/8 passed (DuckDB and Postgres), 31 pytest tests, 75 dbt data tests, 27/27 endpoint checks,
 46/46 callback runs. 12-month forecast MAPE 1.74 % vs 2.33 % for trend continuation and 4.59 % for
 "no change"; 82 % of outcomes fell inside the 80 % interval.
 
@@ -193,6 +195,7 @@ To run the orchestrated refresh: `pip install -r requirements-orchestration.txt`
 | Zensus 2022, table 4000W-0004 | Rent per m² for Berlin and Hamburg Bezirke | 19 Bezirke | dl-de/by-2-0 |
 | Zensus 2022 Gitterzellen | Average rent per grid cell | 100 m and 1 km grid | dl-de/by-2-0 |
 | BKG VG5000 (via geoGermany) | Kreis boundaries | 01.01.2021 | dl-de/by-2-0 |
+| OpenStreetMap postcode areas (via yetzt/postleitzahlen, release 2026.02) | Postcode (PLZ) boundaries, cut to the 37 city Kreise by `scripts/prepare_postcodes.py` | 1,160 postcodes | ODbL 1.0 (© OpenStreetMap contributors); `postcodes.json` is shared under ODbL |
 
 Raw files are committed under `data/raw/` so the project builds offline and in CI.
 `docs/data_sources.md` explains how each file was obtained and how it is refreshed.

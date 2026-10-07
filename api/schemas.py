@@ -177,6 +177,31 @@ class NeighbourhoodSpread(_Model):
     p90_p10_ratio: float | None
 
 
+class KreisRentRange(_Model):
+    """Spread of rents inside a Kreis: cheaper and dearer ends relative to the median (= 100)."""
+
+    ags: str
+    resolution_m: int
+    cells: int
+    p10_rent_eur_sqm: float
+    p50_rent_eur_sqm: float
+    p90_rent_eur_sqm: float
+    p10_index: float
+    p90_index: float
+
+
+class PostcodeRent(_Model):
+    """Rent level of one postcode (PLZ) in a GREIX-city Kreis, from 100 m Zensus grid cells (2022)."""
+
+    ags: str
+    plz: str
+    cells: int
+    p25_rent_eur_sqm: float
+    p50_rent_eur_sqm: float
+    p75_rent_eur_sqm: float
+    rent_index_vs_kreis: float
+
+
 class GridCells(_Model):
     """Column-oriented grid payload (compact for ~30k cells)."""
 
