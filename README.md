@@ -67,11 +67,12 @@ cd web && npm install && npm run dev     # http://localhost:3000 ; `npm run buil
 | Page | What it shows |
 |---|---|
 | `/` | An editorial data story: rent trends since 2020, the new-lease premium, a 12-month outlook, a personal rent check against the 30% rule, and all 37 cities in one sortable table |
-| `/cities`, `/cities/[city]` | 37 city profiles: grounded AI summary, forecast with 80% range, 100 m rent heatmap, days on market, rent check |
+| `/cities`, `/cities/[city]` | 37 city profiles: grounded AI summary, forecast with 80% range, 100 m rent grid on a zoomable street map (MapLibre + OpenFreeMap), days on market, rent check |
 | `/map` | All 400 districts on one map (rent today, affordability, supply vs demand, 2022 rent) with a plain-language panel per district |
 | `/affordability` | Budget finder by flat size and federal state, plus the most and least affordable districts |
 | `/supply-demand` | Empty flats against population growth for every district, with a search that highlights any district |
-| `/methodology` | Pipeline, back-test, metric definitions, 16 numbered references and all data sources with licences |
+| `/methodology` | Pipeline, back-test, metric definitions, 21 numbered references and all data sources with licences |
+| `/about` | Why I built it: from growing up in Mumbai to the German flat search, with cited figures on housing costs for low-income households |
 
 Every explanatory claim on the site links to a numbered reference (official statistics, law, peer-reviewed
 methods); every number comes from the data snapshot.

@@ -4,7 +4,8 @@ import { notFound } from "next/navigation";
 import { BezirkeChart } from "@/components/BezirkeChart";
 import { CitySwitcher } from "@/components/CitySwitcher";
 import { ForecastChart, type HistPoint } from "@/components/ForecastChart";
-import { GridHeatmap } from "@/components/GridHeatmap";
+import { LazyMount } from "@/components/LazyMount";
+import { RentMap } from "@/components/RentMap";
 import { PressureChart } from "@/components/PressureChart";
 import { RankStrips, type Strip } from "@/components/RankStrips";
 import { RentCheck } from "@/components/RentCheck";
@@ -176,11 +177,11 @@ export default async function CityPage({ params }: Props) {
             {notExact && " For this city the map covers the whole surrounding district."}
           </Head>
           <div className={bez.length ? "split wl" : ""}>
-            <Figure title={`Rent per 100 m square, ${snap.city_en}`} sub="Average net cold rent on existing contracts, May 2022. Hover for values."
-              source="Zensus 2022 grid data (100 m); squares with too few flats are left out."
+            <Figure title={`Rent per 100 m square, ${snap.city_en}`} sub="Average net cold rent on existing contracts, May 2022, on a street map. Hover for values; drag to move."
+              source="Zensus 2022 grid data (100 m); squares with too few flats are left out. Basemap: OpenFreeMap, © OpenMapTiles, map data © OpenStreetMap contributors."
               howto={<p>The colour scale runs from the cheapest 2% to the most expensive 2% of squares, so a few extreme squares don&apos;t wash out the
                 rest. A blank area means no or too few rented flats there (parks, industry, water) or the census suppressed the value.</p>}>
-              <GridHeatmap ags={snap.ags} />
+              <LazyMount minHeight={560} margin="400px"><RentMap ags={snap.ags} city={snap.city_en} /></LazyMount>
             </Figure>
             {bez.length > 0 && (
               <Figure title="By borough (Bezirk)" sub={`Average rent on existing leases, 2022. Red is above the ${snap.city_en} average, blue below.`}

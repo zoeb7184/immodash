@@ -13,6 +13,7 @@ const LINKS = [
   { href: "/map", label: "Map" },
   { href: "/supply-demand", label: "Supply & demand" },
   { href: "/methodology", label: "How it works" },
+  { href: "/about", label: "About" },
 ];
 
 export function Nav() {

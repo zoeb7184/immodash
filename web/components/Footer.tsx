@@ -12,7 +12,7 @@ const COLUMNS: { title: string; links: { href: string; label: string; external?:
     { href: "/map", label: "District map" }, { href: "/supply-demand", label: "Supply & demand" },
   ] },
   { title: "Project", links: [
-    { href: "/methodology", label: "How it works" }, { href: "/methodology#references", label: "References" }, { href: "/methodology#sources", label: "Data sources" },
+    { href: "/about", label: "Why I built this" }, { href: "/methodology", label: "How it works" }, { href: "/methodology#references", label: "References" }, { href: "/methodology#sources", label: "Data sources" },
     { href: REPO, label: "Source code", external: true }, { href: `${REPO}/issues`, label: "Report an issue", external: true },
   ] },
   { title: "Author", links: [

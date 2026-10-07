@@ -136,7 +136,7 @@ h3 { font-weight: 600; font-size: clamp(1.125rem, 1rem + 0.3vw, 1.375rem); line-
 .hero-facts .stats.one { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(20px, 2.5vw, 40px); }
 .hero-facts .stats.one .stat:nth-child(2) { border-top: 0; }
 .hero-facts .stat { grid-template-columns: minmax(0, 1fr); gap: 2px; padding: 14px 0; align-content: start; }
-.hero-facts .stat .value { font-size: clamp(22px, 1rem + 0.6vw, 30px); }
+.hero-facts .stat .value { font-size: clamp(22px, 1rem + 0.6vw, 30px); white-space: normal; }
 .hero-facts .stat .txt { font-size: 14px; line-height: 1.5; }
 @media (min-width: 1101px) {
   .page-hero-grid { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); column-gap: clamp(48px, 6vw, 120px); align-items: end; }
@@ -395,6 +395,24 @@ pre { font: 12px/1.5 var(--mono); background: var(--surface-2); padding: 14px; b
 }
 @media (pointer: coarse) { .foot-cols a { min-height: 44px; } .foot-cols ul { gap: 0; } }
 
+
+/* about page */
+.about-photo { margin: 0; }
+.about-photo img { display: block; width: 100%; height: auto; border-radius: var(--r-box); background: var(--surface-2); aspect-ratio: 3 / 2; object-fit: cover; }
+.about-photo figcaption { margin-top: 10px; font: 400 12.5px/1.5 var(--sans); color: var(--muted); }
+.about-photo figcaption a { color: inherit; }
+.about-text h2 { margin-bottom: 14px; }
+@media (min-width: 921px) { .about-split { align-items: center; } }
+.about-steps li .textlink { font-size: 14px; white-space: nowrap; }
+
+/* street map with the 100 m rent grid (MapLibre) */
+.rentmap { position: relative; height: clamp(360px, 62svh, 640px); border-radius: var(--r-box); overflow: hidden; border: 1px solid var(--line); background: var(--surface-2); }
+.rentmap-canvas { width: 100%; height: 100%; }
+.rentmap-loading { position: absolute; inset: 0; display: grid; place-items: center; font: 500 14px var(--sans); color: var(--muted); }
+.rentmap .maplibregl-ctrl-group { border-radius: 10px; box-shadow: 0 1px 2px rgb(0 0 0 / 0.12); }
+.rentmap .maplibregl-ctrl-attrib { font: 11px var(--sans); }
+.rentmap .maplibregl-cooperative-gesture-screen { font: 500 15px var(--sans); }
+@media (pointer: coarse) { .rentmap .maplibregl-ctrl-group button { width: 40px; height: 40px; } }
 
 /* motion: one authored moment (the hero map paints from cheapest to dearest district). Everything else is static and visible. */
 .hero-map path.k { stroke: var(--bg); stroke-width: 0.6; }
